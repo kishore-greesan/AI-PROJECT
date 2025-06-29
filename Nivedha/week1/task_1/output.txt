@@ -1,0 +1,61 @@
+assets\apple.jpg - a apple with a red apple on it 
+assets\Apple.webp - a red apple with a green apple on it 
+assets\apple1.webp - a person holding a red apple in their hand 
+assets\apple2.jpg - a red apple with a green apple on it 
+assets\basketball.jpg - a young man is playing basketball on a court 
+assets\GettyImages-1182203515-scaled_cat.jpg - a cat sitting on top of a rock 
+assets\GettyImages-1197014858-e1687454670935_cat.jpg - a white cat sitting on a wooden table 
+assets\GettyImages-1411467471_cat.jpg - a cat sitting on a ledge looking at the camera 
+assets\gettyimages-2178761060-612x612.jpg - a woman and a man standing next to each other 
+assets\gettyimages-2206517585-612x612.jpg - a man kicking a soccer ball in a field 
+assets\GettyImages-808977920_cat.jpg - a cat is standing on a wooden floor 
+assets\girls-sports-running-on-a-track-scaled.jpg - two girls are standing on the sidewalk with their hands on their hips
+assets\Golden-Retriever_dog.webp - a brown dog sitting on a wooden bench 
+assets\Labrador_dog.webp - a small white dog standing in a field 
+assets\orange.webp - a close up of an orange with a lemon in it 
+assets\orangee.jpg - a orange is sitting on a table 
+assets\orangeinabowl.png - a bowl of oranges sitting on top of a table 
+assets\Pomeranian_dog.webp - a white dog with a black collar and white eyes 
+assets\Shih-Tzus_1_dog.webp - a small dog is standing on the sidewalk 
+Enter a search term: apple
+Similarity: 0.7485 assets\apple.jpg
+Similarity: 0.6821 assets\Apple.webp
+Similarity: 0.4872 assets\apple1.webp
+Similarity: 0.6821 assets\apple2.jpg
+Enter a search term: orange
+Similarity: 0.4673 assets\Apple.webp
+Similarity: 0.4673 assets\apple2.jpg
+Similarity: 0.6421 assets\orange.webp
+Similarity: 0.6670 assets\orangee.jpg
+Similarity: 0.5298 assets\orangeinabowl.png
+Enter a search term: fruit
+Similarity: 0.4159 assets\Apple.webp
+Similarity: 0.4159 assets\apple2.jpg
+Similarity: 0.4110 assets\orange.webp
+Enter a search term: fruits
+Enter a search term: dog
+Similarity: 0.5621 assets\Golden-Retriever_dog.webp
+Similarity: 0.6384 assets\Labrador_dog.webp
+Similarity: 0.5559 assets\Pomeranian_dog.webp
+Similarity: 0.5855 assets\Shih-Tzus_1_dog.webp
+Enter a search term: cat
+Similarity: 0.6671 assets\GettyImages-1182203515-scaled_cat.jpg
+Similarity: 0.6034 assets\GettyImages-1197014858-e1687454670935_cat.jpg
+Similarity: 0.6045 assets\GettyImages-1411467471_cat.jpg
+Similarity: 0.6374 assets\GettyImages-808977920_cat.jpg
+Enter a search term: animal
+Similarity: 0.4288 assets\Labrador_dog.webp
+Enter a search term: pet animal
+Similarity: 0.4379 assets\GettyImages-1182203515-scaled_cat.jpg
+Similarity: 0.4352 assets\GettyImages-1197014858-e1687454670935_cat.jpg
+Similarity: 0.4336 assets\GettyImages-1411467471_cat.jpg
+Similarity: 0.4510 assets\GettyImages-808977920_cat.jpg
+Similarity: 0.4454 assets\Golden-Retriever_dog.webp
+Similarity: 0.4994 assets\Labrador_dog.webp
+Similarity: 0.4617 assets\Shih-Tzus_1_dog.webp
+Enter a search term: sport
+Similarity: 0.4425 assets\gettyimages-2206517585-612x612.jpg
+Enter a search term: girl
+Enter a search term: girls
+Enter a search term: exit
+👋 Exiting.
