@@ -1,6 +1,11 @@
 # Important: Pre-commit Secret Check
 This repository has a pre-commit hook that checks for secrets and sensitive information in your code
 
+## Prerequisites
+
+The secret detector can scan ANY type of file (Python, Java, Config files, etc.), but needs **Node.js** to run so,
+Install Node.js v18+ from [nodejs.org](https://nodejs.org)
+
 ⚠️ **REQUIRED**: One-time Setup - Run the below command after cloning the repository:
 
 ```bash
