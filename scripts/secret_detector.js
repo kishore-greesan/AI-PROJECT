@@ -20,7 +20,16 @@ const SECRET_PATTERNS = {
     // OAuth & Platform Keys
     GITHUB_TOKEN: /gh[ps]_[0-9a-zA-Z]{36}/,
     GOOGLE_API_KEY: /AIza[0-9A-Za-z-_]{35}/,
-    STRIPE_KEY: /(?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24}/
+    STRIPE_KEY: /(?:sk|pk)_(?:test|live)_[0-9a-zA-Z]{24}/,
+
+    // AI API Keys
+    OPENAI_API_KEY: /sk-proj-[0-9a-zA-Z]{48}/,
+    CLAUDE_API_KEY: /claude-[a-zA-Z0-9]{32,64}/,
+    COHERE_API_KEY: /Cohere-[a-zA-Z0-9]{30,60}/,
+    HUGGINFACE_API_KEY: /hf_[a-zA-Z0-9]{32,64}/,
+    REPLICATE_API_KEY: /r8_[a-zA-Z0-9]{32,64}/,
+    STABILITY_API_KEY: /sk-stability-[a-zA-Z0-9]{20,64}/,
+    MISTRAL_API_KEY: /mistral-prod-[a-zA-Z0-9]{20,64}/,
 };
 
 function getStagedFiles() {
