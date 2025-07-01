@@ -29,13 +29,6 @@ The error will show:
 - The line number where it was found
 - The type of secret detected (API key, password, token, etc.)
 
-## For Non-Node.js Developers
-
-Even if you're not working with Node.js/JavaScript:
-1. Make sure you have Node.js(v18 or more) installed (download from [nodejs.org](https://nodejs.org))
-2. Run `npm install` once in the repository root after cloning
-3. Continue using your preferred programming language
-
 The secret check will run automatically before each commit after the initial setup.
 
 
