@@ -13,6 +13,17 @@ npm install
 - It works with all programming languages and file types
 - **Your commits will fail if you don't install the required npm packages**
 
+## What Happens When a Secret is Detected?
+
+When the pre-commit hook detects a potential secret or sensitive information, you'll see an error like this:
+
+![image](https://github.com/user-attachments/assets/620a81c1-4654-4386-9595-28be2e87213d)
+
+The error will show:
+- The file containing the potential secret
+- The line number where it was found
+- The type of secret detected (API key, password, token, etc.)
+
 ## For Non-Node.js Developers
 
 Even if you're not working with Node.js/JavaScript:
@@ -21,3 +32,6 @@ Even if you're not working with Node.js/JavaScript:
 3. Continue using your preferred programming language
 
 The secret check will run automatically before each commit after the initial setup.
+
+
+
