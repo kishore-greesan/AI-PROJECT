@@ -15,7 +15,7 @@ const SECRET_PATTERNS = {
     
     // Database Connection Strings
     MONGODB_URI: /mongodb(?:\+srv)?:\/\/[^:]+:[^@]+@[^/]+\/[\w-]+/i,
-    POSTGRES_URI: /postgres(?:ql)?:\/\/[^:]+:[^@]+@[^/]+\/[\w-]+/i,
+    POSTGRES_URI: /postgres(?:ql)?:\/\/[^:\s]+:[^@\s]+@/i,
     
     // OAuth & Platform Keys
     GITHUB_TOKEN: /gh[ps]_[0-9a-zA-Z]{36}/,
