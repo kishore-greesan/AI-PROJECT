@@ -736,5 +736,94 @@ def get_reports_simple():
         ]
     })
 
+@app.route("/api/manager/team-members", methods=["GET"])
+def get_manager_team_members():
+    try:
+        # Return employees that the current manager manages
+        team_members = [
+            {
+                "id": 3,
+                "name": "Employee User",
+                "role": "employee",
+                "department": "Engineering",
+                "email": "employee@test.com",
+                "avatar": "👨‍💻",
+                "lastActive": "2 hours ago",
+                "performance": 4.2,
+                "goals": 2,
+                "completed": 1
+            }
+        ]
+        return jsonify(team_members)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/manager/pending-reviews", methods=["GET"])
+def get_manager_pending_reviews():
+    try:
+        # Return goals that need manager review
+        pending_reviews = [
+            {
+                "id": 1,
+                "employee": "Employee User",
+                "goal": "Improve Team Collaboration",
+                "dueDate": "2024-01-20",
+                "priority": "High",
+                "status": "Submitted",
+                "employeeId": 3,
+                "goalId": 1,
+                "submittedDate": "2024-01-15"
+            }
+        ]
+        return jsonify(pending_reviews)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/manager/team-performance", methods=["GET"])
+def get_manager_team_performance():
+    try:
+        # Return team performance metrics
+        team_performance = {
+            "averageRating": 4.2,
+            "goalsCompleted": 1,
+            "totalGoals": 2,
+            "teamSize": 1,
+            "activeMembers": 1,
+            "departmentBreakdown": {
+                "Engineering": {"members": 1, "avgRating": 4.2}
+            },
+            "recentAchievements": [
+                "Employee User completed 1 goal",
+                "Team achieved 50% goal completion rate"
+            ]
+        }
+        return jsonify(team_performance)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/manager/recent-activity", methods=["GET"])
+def get_manager_recent_activity():
+    try:
+        # Return recent activity for manager's team
+        recent_activity = [
+            {
+                "id": 1,
+                "action": "Goal submitted for review",
+                "user": "Employee User",
+                "time": "2 hours ago",
+                "type": "goal_submission"
+            },
+            {
+                "id": 2,
+                "action": "Progress update",
+                "user": "Employee User",
+                "time": "1 day ago",
+                "type": "progress_update"
+            }
+        ]
+        return jsonify(recent_activity)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False) 
