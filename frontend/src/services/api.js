@@ -9,11 +9,21 @@ export const getApiUrl = () => {
     if (import.meta.env.PROD) {
       const url = import.meta.env.VITE_API_URL || '/api'
       console.log('Production detected, using URL:', url)
+      console.log('Environment variables:', {
+        VITE_API_URL: import.meta.env.VITE_API_URL,
+        PROD: import.meta.env.PROD,
+        MODE: import.meta.env.MODE
+      })
       return url
     }
     // In development, use localhost or environment variable
     const url = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
     console.log('Development detected, using URL:', url)
+    console.log('Environment variables:', {
+      VITE_API_URL: import.meta.env.VITE_API_URL,
+      PROD: import.meta.env.PROD,
+      MODE: import.meta.env.MODE
+    })
     return url
   }
   
@@ -33,6 +43,7 @@ const api = axios.create({
 // Add request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
+    console.log('Making request to:', config.baseURL + config.url)
     const { token } = useAuthStore.getState()
     
     if (token) {
@@ -47,9 +58,18 @@ api.interceptors.request.use(
 
 // Add response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('Response received:', response.status, response.data)
+    return response
+  },
   (error) => {
     console.error('API Error:', error.response?.data || error.message)
+    console.error('Error details:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL
+    })
     if (error.response?.status === 401) {
       // Handle unauthorized access
       useAuthStore.getState().logout()
