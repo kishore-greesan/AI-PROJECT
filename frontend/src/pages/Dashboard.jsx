@@ -764,6 +764,7 @@ const Dashboard = () => {
       switch (role) {
         case 'admin':
           return renderAdminDashboard()
+        case 'manager':
         case 'reviewer':
           return renderManagerDashboard()
         default:
