@@ -16,7 +16,7 @@ const PendingRegistrations = () => {
 
   const fetchPendingRegistrations = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/auth/pending-registrations`, {
+      const response = await fetch(`${getApiUrl()}/pending-registrations`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

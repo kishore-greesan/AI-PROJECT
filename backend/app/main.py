@@ -338,6 +338,40 @@ def manage_user(user_id):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+@app.route("/api/users/<int:user_id>/approve", methods=["POST"])
+def approve_user(user_id):
+    try:
+        data = request.get_json()
+        approval_status = data.get("approval_status")
+        reason = data.get("reason", "")
+        
+        # Find user by ID
+        user = None
+        for email, u in USERS.items():
+            if u["id"] == user_id:
+                user = u
+                break
+        
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Update user approval status
+        user["approval_status"] = approval_status
+        if reason:
+            user["rejection_reason"] = reason
+        
+        return jsonify({
+            "message": f"User {approval_status} successfully",
+            "user": {
+                "id": user["id"],
+                "email": user["email"],
+                "name": user["name"],
+                "approval_status": approval_status
+            }
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/api/users/reviewers", methods=["GET"])
 def get_reviewers():
     reviewers = [user for user in USERS.values() if user["role"] in ["admin", "manager"]]
