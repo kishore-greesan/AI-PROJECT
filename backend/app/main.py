@@ -22,21 +22,27 @@ USERS = {
         "email": "admin@test.com",
         "password": "Password123!",
         "role": "admin",
-        "name": "Admin User"
+        "name": "Admin User",
+        "manager_id": None,
+        "appraiser_id": None
     },
     "manager@test.com": {
         "id": 2,
         "email": "manager@test.com", 
         "password": "Password123!",
         "role": "manager",
-        "name": "Manager User"
+        "name": "Manager User",
+        "manager_id": None,
+        "appraiser_id": None
     },
     "employee@test.com": {
         "id": 3,
         "email": "employee@test.com",
         "password": "Password123!",
         "role": "employee",
-        "name": "Employee User"
+        "name": "Employee User",
+        "manager_id": 2,
+        "appraiser_id": 2
     }
 }
 
@@ -374,7 +380,16 @@ def approve_user(user_id):
 
 @app.route("/api/users/reviewers", methods=["GET"])
 def get_reviewers():
-    reviewers = [user for user in USERS.values() if user["role"] in ["admin", "manager"]]
+    reviewers = []
+    for user in USERS.values():
+        if user["role"] in ["admin", "manager"]:
+            reviewers.append({
+                "id": user["id"],
+                "name": user["name"],
+                "email": user["email"],
+                "role": user["role"],
+                "department": user.get("department", "")
+            })
     return jsonify(reviewers)
 
 @app.route("/api/users/employees", methods=["GET"])
@@ -405,7 +420,8 @@ def get_user_profile():
             "team": "Not assigned",
             "title": "Not specified",
             "phone": "Not specified",
-            "manager": "Not assigned",
+            "manager": user.get("manager_id", "Not assigned"),
+            "appraiser": user.get("appraiser_id", "Not assigned"),
             "years_experience": 0,
             "company_years": 0,
             "direct_reports": 0,
@@ -440,6 +456,17 @@ def mark_notification_read(notification_id):
 @app.route("/api/notifications/<int:notification_id>/read", methods=["PUT"])
 def mark_notification_read_alt(notification_id):
     return mark_notification_read(notification_id)
+
+@app.route("/api/notifications/mark-all-read", methods=["PUT"])
+def mark_all_notifications_read():
+    try:
+        # Mark all notifications as read
+        for notification in NOTIFICATIONS:
+            notification["read"] = True
+        
+        return jsonify({"message": "All notifications marked as read"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Pending registrations endpoint
 @app.route("/api/pending-registrations", methods=["GET"])
@@ -494,6 +521,58 @@ def delete_goal(goal_id):
     global GOALS
     GOALS = [g for g in GOALS if g["id"] != goal_id]
     return jsonify({"message": "Goal deleted successfully"})
+
+@app.route("/api/goals/submit_all", methods=["POST"])
+def submit_all_goals():
+    try:
+        # Get all draft goals for the current user
+        draft_goals = [g for g in GOALS if g.get("status") == "draft"]
+        
+        if not draft_goals:
+            return jsonify({"error": "No draft goals found"}), 400
+        
+        # Update all draft goals to submitted status
+        for goal in draft_goals:
+            goal["status"] = "submitted"
+            goal["submitted_at"] = "2024-01-15T10:30:00Z"
+        
+        return jsonify({
+            "message": f"Successfully submitted {len(draft_goals)} goals for review",
+            "submitted_count": len(draft_goals)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals/history", methods=["GET"])
+def get_goal_history():
+    try:
+        # Return goal history/activity
+        history = [
+            {
+                "id": 1,
+                "goal_id": 1,
+                "action": "Goal created",
+                "timestamp": "2024-01-15T10:30:00Z",
+                "user": "employee@test.com"
+            },
+            {
+                "id": 2,
+                "goal_id": 1,
+                "action": "Progress updated",
+                "timestamp": "2024-01-16T14:20:00Z",
+                "user": "employee@test.com"
+            },
+            {
+                "id": 3,
+                "goal_id": 1,
+                "action": "Submitted for review",
+                "timestamp": "2024-01-17T09:15:00Z",
+                "user": "employee@test.com"
+            }
+        ]
+        return jsonify(history)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/goals/submit-for-review", methods=["POST"])
 def submit_goals_for_review():

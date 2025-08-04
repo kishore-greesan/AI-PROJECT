@@ -187,7 +187,7 @@ const NotificationBell = () => {
                   >
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0 text-lg">
-                        {getNotificationIcon(notification.notification_type)}
+                        {getNotificationIcon(notification.type)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-medium ${
