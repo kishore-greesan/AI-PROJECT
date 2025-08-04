@@ -1,230 +1,209 @@
-# Employee Performance Management System (EPMS)
+# 🚀 AI-PROJECT Repository
 
-A comprehensive employee performance management system built with React, FastAPI, and SQL Server.
+## Overview
+This repository contains the **Employee Performance Management System** - a comprehensive web application built with FastAPI backend and React frontend.
 
-## 🚀 Features
+## 📁 Project Structure
 
-### Core Functionality
-- **User Management**: Registration, approval workflow, role-based access
-- **Goal Management**: Create, track, and review performance goals
-- **Performance Reviews**: Self-assessments and manager reviews
-- **Skills Tracking**: Employee skill development and competency matrix
-- **Reports & Analytics**: Visual dashboards with charts and metrics
-- **Notifications**: Real-time notifications for approvals and updates
-- **Organizational Hierarchy**: Department and team management
-
-### User Roles
-- **Employee**: Create goals, self-assessments, view performance
-- **Reviewer/Manager**: Review goals, provide feedback, manage team
-- **Admin**: Full system access, user management, reports
+```
+AI-PROJECT/
+└── I24143_KISHOREGREESAN_DEV_L2/
+    ├── backend/                 # FastAPI Backend
+    │   ├── app/                # Application code
+    │   ├── requirements.txt    # Python dependencies
+    │   └── main.py            # Entry point
+    ├── frontend/               # React Frontend
+    │   ├── src/               # Source code
+    │   ├── package.json       # Node.js dependencies
+    │   └── vite.config.js     # Vite configuration
+    ├── render.yaml            # Render deployment config
+    ├── docker-compose.yml     # Local development
+    └── README.md             # Project documentation
+```
 
 ## 🛠️ Technology Stack
 
-### Frontend
-- **React 18** with Vite
-- **Tailwind CSS** for styling
-- **Recharts** for data visualization
-- **Zustand** for state management
-- **React Router** for navigation
-- **Axios** for API communication
-
 ### Backend
-- **FastAPI** with Python 3.11
-- **SQLAlchemy** ORM
-- **SQL Server** database
-- **JWT** authentication
-- **Pydantic** for data validation
-- **Passlib** for password hashing
+- **FastAPI** - Modern Python web framework
+- **SQLAlchemy** - ORM for database operations
+- **SQLite** - Database (can be upgraded to PostgreSQL)
+- **JWT** - Authentication and authorization
+- **Pydantic** - Data validation
 
-### Infrastructure
-- **Docker** containerization
-- **Docker Compose** for orchestration
-- **Nginx** for frontend serving
-- **Health checks** and monitoring
+### Frontend
+- **React 18** - UI framework
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Styling
+- **Recharts** - Data visualization
+- **React Router** - Client-side routing
 
-## 📦 Quick Start
+## 🚀 Quick Start
 
-### Development
-```bash
-# Clone the repository
-git clone <repository-url>
-cd L2-emp_Performance_mgmt
+### Prerequisites
+- Python 3.11+
+- Node.js 18+
+- Docker (optional)
 
-# Start development environment
-docker-compose up -d
+### Local Development
 
-# Access the application
-# Frontend: http://localhost:3000
-# Backend: http://localhost:8000
-# API Docs: http://localhost:8000/docs
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/kishore-greesan/AI-PROJECT.git
+   cd AI-PROJECT/I24143_KISHOREGREESAN_DEV_L2
+   ```
 
-### Production Deployment
-```bash
-# Run automated deployment
-./deploy.sh
+2. **Start with Docker (Recommended):**
+   ```bash
+   docker-compose up -d
+   ```
 
-# Or manual deployment
-docker-compose -f docker-compose.prod.yml up -d --build
-```
+3. **Or start manually:**
+   ```bash
+   # Backend
+   cd backend
+   pip install -r requirements.txt
+   uvicorn app.main:app --reload
+   
+   # Frontend
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
-## 🔐 Default Credentials
+4. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+   - API Docs: http://localhost:8000/docs
 
-### Admin User
-- **Email**: admin@test.com
-- **Password**: TestPass123!
+## 🔐 Default Login Credentials
 
-### Test Users
-- **Manager**: greesan@test.com / TestPass123!
-- **Employee**: kishore@test.com / TestPass123!
+- **Admin:** `admin@test.com` / `Password123!`
+- **Manager:** `manager@test.com` / `Password123!`
+- **Employee:** `employee@test.com` / `Password123!`
 
-## 📊 System Architecture
+## 🌟 Features
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Backend       │    │   Database      │
-│   (React)       │◄──►│   (FastAPI)     │◄──►│   (SQL Server)  │
-│   Port: 80      │    │   Port: 8000    │    │   Port: 1433    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+### User Management
+- User registration and authentication
+- Role-based access control (Admin, Manager, Employee)
+- Profile management
+- Organizational hierarchy
 
-## 🎯 Key Features Implemented
-
-### ✅ User Registration & Approval
-- Public registration with admin approval workflow
-- Email-based user management
-- Role-based access control
-
-### ✅ Goal Management
-- Create, edit, and track performance goals
-- Goal status tracking (draft, submitted, approved, rejected)
+### Goal Management
+- Create and track performance goals
 - Progress updates and history
+- Goal reviews and approvals
+- Performance metrics
 
-### ✅ Performance Reviews
-- Self-assessment functionality
-- Manager review system
-- Rating and feedback system
+### Performance Reviews
+- 360-degree performance reviews
+- Review cycles and scheduling
+- Feedback and comments
+- Review history
 
-### ✅ Skills Management
-- Skill categorization and tracking
-- Competency matrix visualization
-- Skill development tracking
+### Reports & Analytics
+- Admin dashboard with key metrics
+- Manager team overview
+- Performance trends
+- Goal progress tracking
 
-### ✅ Reports & Analytics
-- Role-based dashboard views
-- Interactive charts and graphs
-- Performance metrics and trends
-
-### ✅ Organizational Structure
-- Department and team management
-- Reporting hierarchy
-- Position and level tracking
-
-### ✅ Notification System
+### Notifications
 - Real-time notifications
-- Approval workflow notifications
-- System-wide announcements
+- Email alerts
+- System announcements
+
+## 🚀 Deployment
+
+### Render Deployment (Recommended)
+See [RENDER_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/RENDER_DEPLOYMENT.md) for detailed instructions.
+
+### Railway Deployment
+See [RAILWAY_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/RAILWAY_DEPLOYMENT.md) for detailed instructions.
+
+### Vercel Deployment
+See [VERCEL_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/VERCEL_DEPLOYMENT.md) for detailed instructions.
+
+## 📊 API Endpoints
+
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
+- `GET /api/auth/me` - Get current user
+
+### Users
+- `GET /api/users` - List all users
+- `POST /api/users` - Create user
+- `PUT /api/users/{id}` - Update user
+- `DELETE /api/users/{id}` - Delete user
+
+### Goals
+- `GET /api/goals` - List goals
+- `POST /api/goals` - Create goal
+- `PUT /api/goals/{id}` - Update goal
+- `GET /api/goals/review` - Goals for review
+
+### Reports
+- `GET /api/reports/admin/overview` - Admin dashboard
+- `GET /api/reports/manager/team` - Manager reports
 
 ## 🔧 Configuration
 
 ### Environment Variables
+
 ```bash
 # Database
-DB_PASSWORD=YourStrongPassword123!
+DATABASE_URL=sqlite:///./app.db
 
-# JWT Security
-JWT_SECRET_KEY=your-super-secret-jwt-key
-
-# API Configuration
-API_URL=http://localhost:8000/api
-
-# Application Settings
-DEBUG=False
+# JWT
+JWT_SECRET_KEY=your-secret-key
 ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
+
+# CORS
+ALLOWED_ORIGINS=*
+
+# Debug
+DEBUG=false
 ```
 
-## 📈 Performance & Security
+## 🧪 Testing
 
-### Security Features
-- JWT-based authentication
-- Password hashing with bcrypt
-- Input validation and sanitization
-- CORS protection
-- SQL injection prevention
-
-### Performance Optimizations
-- Database indexing
-- Query optimization
-- Static asset caching
-- Gzip compression
-- Health monitoring
-
-## 🚨 Recent Fixes
-
-### ✅ Resolved Issues
-1. **Duplicate Performance Cycle** - Removed duplicate section from dashboard
-2. **Goal Creation 401 Error** - Fixed authentication import in goal API
-3. **Reviews 404 Error** - Fixed double prefix in router configuration
-4. **Authentication Flow** - Proper JWT token handling
-5. **API Endpoints** - All endpoints now working correctly
-
-## 📋 Deployment Options
-
-### 1. Local Production
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+# Backend tests
+cd backend
+python -m pytest
+
+# Frontend tests
+cd frontend
+npm test
 ```
 
-### 2. Cloud Deployment
-- **AWS EC2**: Full Docker deployment
-- **Azure**: Container Instances
-- **Google Cloud**: Cloud Run
-- **DigitalOcean**: App Platform
+## 📝 Contributing
 
-### 3. Container Orchestration
-- **Kubernetes**: Scalable deployment
-- **Docker Swarm**: Simple orchestration
-- **AWS ECS**: Managed containers
-
-## 🔍 Monitoring & Maintenance
-
-### Health Checks
-```bash
-# Backend health
-curl http://localhost:8000/health
-
-# Frontend
-curl http://localhost
-```
-
-### Logs
-```bash
-# View all logs
-docker-compose -f docker-compose.prod.yml logs -f
-
-# Specific service
-docker-compose -f docker-compose.prod.yml logs -f backend
-```
-
-## 📞 Support & Documentation
-
-- **API Documentation**: http://localhost:8000/docs
-- **Deployment Guide**: See `DEPLOYMENT.md`
-- **Troubleshooting**: See `DEPLOYMENT.md#troubleshooting`
-
-## 🎉 Success Metrics
-
-- ✅ **Uptime**: > 99.9%
-- ✅ **Response Time**: < 200ms
-- ✅ **Security**: Zero vulnerabilities
-- ✅ **User Experience**: Intuitive interface
-- ✅ **Scalability**: Containerized architecture
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License.
 
+## 👨‍💻 Author
+
+**Kishore Greesan**  
+GitHub: [@kishore-greesan](https://github.com/kishore-greesan)
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue in this repository
+- Check the deployment guides in the `I24143_KISHOREGREESAN_DEV_L2/` folder
+- Review the API documentation at `/docs` when running locally
+
 ---
 
-**Employee Performance Management System** - A modern, scalable solution for managing employee performance and organizational growth. 
+**🎯 Project Status:** Ready for deployment  
+**📦 Repository:** https://github.com/kishore-greesan/AI-PROJECT.git  
+**🌐 Branch:** `main`  
+**📁 Root Folder:** `I24143_KISHOREGREESAN_DEV_L2/` 
