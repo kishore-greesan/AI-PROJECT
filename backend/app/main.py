@@ -40,6 +40,39 @@ USERS = {
     }
 }
 
+# Mock data for other endpoints
+GOALS = [
+    {
+        "id": 1,
+        "title": "Improve Team Collaboration",
+        "description": "Enhance communication and teamwork",
+        "status": "in_progress",
+        "progress": 75,
+        "due_date": "2024-12-31",
+        "user_id": 3
+    },
+    {
+        "id": 2,
+        "title": "Complete Project Milestone",
+        "description": "Finish the current project phase",
+        "status": "completed",
+        "progress": 100,
+        "due_date": "2024-11-30",
+        "user_id": 3
+    }
+]
+
+REVIEWS = [
+    {
+        "id": 1,
+        "goal_id": 1,
+        "reviewer_id": 2,
+        "rating": 4,
+        "comments": "Good progress on team collaboration",
+        "status": "completed"
+    }
+]
+
 # Simple token validation (in production, use JWT)
 def get_user_from_token(token):
     if not token or not token.startswith('token_'):
@@ -81,6 +114,7 @@ def debug_info():
         "available_users": list(USERS.keys())
     })
 
+# Auth endpoints
 @app.route("/api/auth/login", methods=["POST"])
 def login():
     try:
@@ -151,6 +185,14 @@ def register():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/auth/refresh", methods=["POST"])
+def refresh_token():
+    return jsonify({"message": "Token refreshed"})
+
+@app.route("/api/auth/logout", methods=["POST"])
+def logout():
+    return jsonify({"message": "Logged out successfully"})
+
 @app.route("/api/auth/me", methods=["GET"])
 def get_current_user():
     try:
@@ -174,11 +216,20 @@ def get_current_user():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# User endpoints
 @app.route("/api/users/me", methods=["GET"])
 def get_my_profile():
     return get_current_user()
 
-@app.route("/api/users", methods=["GET"])
+@app.route("/api/users/me", methods=["PUT"])
+def update_my_profile():
+    try:
+        data = request.get_json()
+        return jsonify({"message": "Profile updated successfully", "data": data})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/users/", methods=["GET"])
 def get_users():
     try:
         # Return list of users (without passwords)
@@ -195,44 +246,233 @@ def get_users():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/goals", methods=["GET"])
+@app.route("/api/users/reviewers", methods=["GET"])
+def get_reviewers():
+    reviewers = [user for user in USERS.values() if user["role"] in ["admin", "manager"]]
+    return jsonify(reviewers)
+
+@app.route("/api/users/employees", methods=["GET"])
+def get_employees():
+    employees = [user for user in USERS.values() if user["role"] == "employee"]
+    return jsonify(employees)
+
+@app.route("/api/users/<int:user_id>", methods=["GET"])
+def get_user_by_id(user_id):
+    for user in USERS.values():
+        if user["id"] == user_id:
+            return jsonify(user)
+    return jsonify({"error": "User not found"}), 404
+
+# Goals endpoints
+@app.route("/api/goals/", methods=["GET"])
 def get_goals():
-    # Mock goals data
-    goals = [
-        {
-            "id": 1,
-            "title": "Improve Team Collaboration",
-            "description": "Enhance communication and teamwork",
+    return jsonify(GOALS)
+
+@app.route("/api/goals/all", methods=["GET"])
+def get_all_goals():
+    return jsonify(GOALS)
+
+@app.route("/api/goals/<int:goal_id>", methods=["GET"])
+def get_goal_by_id(goal_id):
+    goal = next((g for g in GOALS if g["id"] == goal_id), None)
+    if goal:
+        return jsonify(goal)
+    return jsonify({"error": "Goal not found"}), 404
+
+@app.route("/api/goals/", methods=["POST"])
+def create_goal():
+    try:
+        data = request.get_json()
+        new_goal = {
+            "id": len(GOALS) + 1,
+            **data,
             "status": "in_progress",
-            "progress": 75,
-            "due_date": "2024-12-31"
-        },
-        {
-            "id": 2,
-            "title": "Complete Project Milestone",
-            "description": "Finish the current project phase",
-            "status": "completed",
-            "progress": 100,
-            "due_date": "2024-11-30"
+            "progress": 0
         }
-    ]
-    return jsonify(goals)
+        GOALS.append(new_goal)
+        return jsonify(new_goal)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals/<int:goal_id>", methods=["PUT"])
+def update_goal(goal_id):
+    try:
+        data = request.get_json()
+        goal = next((g for g in GOALS if g["id"] == goal_id), None)
+        if goal:
+            goal.update(data)
+            return jsonify(goal)
+        return jsonify({"error": "Goal not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals/<int:goal_id>", methods=["DELETE"])
+def delete_goal(goal_id):
+    global GOALS
+    GOALS = [g for g in GOALS if g["id"] != goal_id]
+    return jsonify({"message": "Goal deleted successfully"})
+
+@app.route("/api/goals/submit-for-review", methods=["POST"])
+def submit_goals_for_review():
+    try:
+        data = request.get_json()
+        return jsonify({"message": "Goals submitted for review"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals/<int:goal_id>/progress", methods=["GET"])
+def get_goal_progress(goal_id):
+    goal = next((g for g in GOALS if g["id"] == goal_id), None)
+    if goal:
+        return jsonify({"progress": goal.get("progress", 0)})
+    return jsonify({"error": "Goal not found"}), 404
+
+@app.route("/api/goals/<int:goal_id>/progress", methods=["POST"])
+def update_goal_progress(goal_id):
+    try:
+        data = request.get_json()
+        goal = next((g for g in GOALS if g["id"] == goal_id), None)
+        if goal:
+            goal["progress"] = data.get("progress", goal.get("progress", 0))
+            return jsonify(goal)
+        return jsonify({"error": "Goal not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals/review", methods=["GET"])
+def get_goals_for_review():
+    return jsonify([g for g in GOALS if g["status"] == "pending_review"])
+
+@app.route("/api/goals/<int:goal_id>/review", methods=["POST"])
+def review_goal(goal_id):
+    try:
+        data = request.get_json()
+        return jsonify({"message": "Goal reviewed successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Reviews endpoints
+@app.route("/api/reviews/", methods=["POST"])
+def create_review():
+    try:
+        data = request.get_json()
+        new_review = {
+            "id": len(REVIEWS) + 1,
+            **data
+        }
+        REVIEWS.append(new_review)
+        return jsonify(new_review)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/reviews/", methods=["GET"])
+def get_reviews():
+    return jsonify(REVIEWS)
+
+@app.route("/api/reviews/<int:review_id>", methods=["GET"])
+def get_review_by_id(review_id):
+    review = next((r for r in REVIEWS if r["id"] == review_id), None)
+    if review:
+        return jsonify(review)
+    return jsonify({"error": "Review not found"}), 404
+
+@app.route("/api/reviews/<int:review_id>", methods=["PUT"])
+def update_review(review_id):
+    try:
+        data = request.get_json()
+        review = next((r for r in REVIEWS if r["id"] == review_id), None)
+        if review:
+            review.update(data)
+            return jsonify(review)
+        return jsonify({"error": "Review not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/reviews/<int:review_id>", methods=["DELETE"])
+def delete_review(review_id):
+    global REVIEWS
+    REVIEWS = [r for r in REVIEWS if r["id"] != review_id]
+    return jsonify({"message": "Review deleted successfully"})
+
+@app.route("/api/reviews/comparison/<int:goal_id>", methods=["GET"])
+def get_review_comparison(goal_id):
+    return jsonify({"comparison": "Review comparison data"})
+
+@app.route("/api/reviews/summary/", methods=["GET"])
+def get_reviews_summary():
+    return jsonify({"summary": "Reviews summary data"})
+
+# Reports endpoints
+@app.route("/api/reports/admin/overview", methods=["GET"])
+def get_admin_overview():
+    return jsonify({
+        "total_users": len(USERS),
+        "total_goals": len(GOALS),
+        "completed_goals": len([g for g in GOALS if g["status"] == "completed"]),
+        "pending_reviews": len([g for g in GOALS if g["status"] == "pending_review"])
+    })
+
+@app.route("/api/reports/admin/department-stats", methods=["GET"])
+def get_department_stats():
+    return jsonify({
+        "departments": [
+            {"name": "Engineering", "users": 5, "goals": 12},
+            {"name": "Marketing", "users": 3, "goals": 8},
+            {"name": "Sales", "users": 4, "goals": 10}
+        ]
+    })
+
+@app.route("/api/reports/manager/team-overview", methods=["GET"])
+def get_manager_team_overview():
+    return jsonify({
+        "team_size": 5,
+        "active_goals": 8,
+        "completed_goals": 3,
+        "average_progress": 75
+    })
+
+@app.route("/api/reports/manager/team-members", methods=["GET"])
+def get_team_members():
+    employees = [user for user in USERS.values() if user["role"] == "employee"]
+    return jsonify(employees)
+
+@app.route("/api/reports/trends/goal-progress", methods=["GET"])
+def get_goal_progress_trends():
+    return jsonify({
+        "trends": [
+            {"month": "Jan", "progress": 65},
+            {"month": "Feb", "progress": 72},
+            {"month": "Mar", "progress": 78}
+        ]
+    })
+
+@app.route("/api/reports/skills/competency-matrix", methods=["GET"])
+def get_competency_matrix():
+    return jsonify({
+        "matrix": [
+            {"skill": "Leadership", "level": 4, "target": 5},
+            {"skill": "Communication", "level": 3, "target": 4},
+            {"skill": "Technical", "level": 5, "target": 5}
+        ]
+    })
+
+@app.route("/api/goals", methods=["GET"])
+def get_goals_simple():
+    return jsonify(GOALS)
 
 @app.route("/api/reports", methods=["GET"])
-def get_reports():
-    # Mock reports data
-    reports = {
+def get_reports_simple():
+    return jsonify({
         "performance_summary": {
-            "total_goals": 5,
-            "completed_goals": 3,
-            "average_progress": 80
+            "total_goals": len(GOALS),
+            "completed_goals": len([g for g in GOALS if g["status"] == "completed"]),
+            "average_progress": sum(g.get("progress", 0) for g in GOALS) / len(GOALS) if GOALS else 0
         },
         "recent_activities": [
             {"date": "2024-01-15", "activity": "Goal completed"},
             {"date": "2024-01-10", "activity": "Review submitted"}
         ]
-    }
-    return jsonify(reports)
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False) 
