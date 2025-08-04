@@ -56,6 +56,14 @@ def health_check():
 def test_api():
     return jsonify({"message": "API is working!"})
 
+@app.route("/api/debug")
+def debug_info():
+    return jsonify({
+        "message": "Debug endpoint - new code deployed",
+        "users_count": len(USERS),
+        "available_users": list(USERS.keys())
+    })
+
 @app.route("/api/auth/login", methods=["POST"])
 def login():
     try:
