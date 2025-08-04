@@ -1,37 +1,7 @@
 version: '3.8'
 
 services:
-  # SQL Server Database
-  db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Password123!
-      - MSSQL_PID=Express
-    ports:
-      - "1433:1433"
-    volumes:
-      - sqlserver_data:/var/opt/mssql
-      - ./mssql-init:/docker-entrypoint-initdb.d
-    networks:
-      - epms-network
-
-  # Seed Database
-  seed:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    environment:
-      - DATABASE_URL=mssql+pyodbc://sa:Password123!@db:1433/epms?driver=ODBC+Driver+17+for+SQL+Server
-      - JWT_SECRET_KEY=your-secret-key-change-in-production
-      - DEBUG=True
-    networks:
-      - epms-network
-    command: python seed_data.py
-
-  # Backend API
+  # Backend API (Flask)
   backend:
     build:
       context: ./backend
@@ -39,17 +9,16 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mssql+pyodbc://sa:Password123!@db:1433/epms?driver=ODBC+Driver+17+for+SQL+Server
+      - DATABASE_URL=sqlite:///./app.db
       - JWT_SECRET_KEY=your-secret-key-change-in-production
       - DEBUG=True
-    depends_on:
-      - db
-      - seed
+      - ALLOWED_ORIGINS=*
+      - FLASK_APP=app.main
     networks:
       - epms-network
     volumes:
       - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: python -m flask run --host 0.0.0.0 --port 8000
 
   # Frontend React App
   frontend:
@@ -67,10 +36,7 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: npm run dev
-
-volumes:
-  sqlserver_data:
+    command: npm run dev -- --host 0.0.0.0
 
 networks:
   epms-network:
