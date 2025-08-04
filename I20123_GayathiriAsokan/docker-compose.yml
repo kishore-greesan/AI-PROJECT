@@ -1,0 +1,96 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: crm_user
+      POSTGRES_PASSWORD: crm_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+
+  auth-service:
+    build: ./backend/auth-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/authdb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  product-service:
+    build: ./backend/product-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/productdb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8081"
+
+  warehouse-service:
+    build: ./backend/warehouse-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/warehousedb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8082"
+
+  po-service:
+    build: ./backend/po-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/ordersdb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8083:8083"
+
+  alert-service:
+    build: ./backend/alert-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/alertdb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8084:8084"
+
+  reporting-service:
+    build: ./backend/reporting-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://dbcrm1.cetwscw62qdr.us-east-1.rds.amazonaws.com:5432/reportdb
+      SPRING_DATASOURCE_USERNAME: crm_user
+      SPRING_DATASOURCE_PASSWORD: crm_pass
+    depends_on:
+      - postgres
+    ports:
+      - "8085:8085"
+
+  api-gateway:
+    build: ./backend/api-gateway
+    depends_on:
+      - auth-service
+      - product-service
+      - warehouse-service
+      - po-service
+      - alert-service
+      - reporting-service
+    environment:
+      - JWT_SECRET=mysecretkey12345678901234567890123456789012
+    ports:
+      - "8088:8088"
+
+volumes:
+  pgdata: 

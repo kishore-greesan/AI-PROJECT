@@ -1,0 +1,265 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "L2Assessment Microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth Service",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\",\n  \"role\": \"USER\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "register"] }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\"\n}"
+            },
+            "url": { "raw": "http://localhost:8080/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "login"] }
+          }
+        },
+        {
+          "name": "Validate JWT",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8080/api/auth/validate", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "auth", "validate"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Service",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8081/api/products", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "products"] }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop\",\n  \"sku\": \"SKU123\",\n  \"price\": 999.99,\n  \"categoryId\": 1\n}"
+            },
+            "url": { "raw": "http://localhost:8081/api/products", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "products"] }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Laptop Pro\",\n  \"sku\": \"SKU123\",\n  \"price\": 1299.99,\n  \"categoryId\": 1\n}"
+            },
+            "url": { "raw": "http://localhost:8081/api/products/1", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "products", "1"] }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8081/api/products/1", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "products", "1"] }
+          }
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8081/api/products/categories", "protocol": "http", "host": ["localhost"], "port": "8081", "path": ["api", "products", "categories"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "Get Inventory by ProductId",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8086/api/inventory?productId=1", "protocol": "http", "host": ["localhost"], "port": "8086", "path": ["api", "inventory"], "query": [{"key": "productId", "value": "1"}] }
+          }
+        },
+        {
+          "name": "Update Inventory",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": 1,\n  \"warehouseId\": 1,\n  \"quantity\": 50\n}"
+            },
+            "url": { "raw": "http://localhost:8086/api/inventory/update", "protocol": "http", "host": ["localhost"], "port": "8086", "path": ["api", "inventory", "update"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Warehouse Service",
+      "item": [
+        {
+          "name": "Get All Warehouses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8082/api/warehouses", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "warehouses"] }
+          }
+        },
+        {
+          "name": "Create Warehouse",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Main Warehouse\",\n  \"location\": \"Chennai\"\n}"
+            },
+            "url": { "raw": "http://localhost:8082/api/warehouses", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "warehouses"] }
+          }
+        },
+        {
+          "name": "Update Warehouse",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Warehouse\",\n  \"location\": \"Bangalore\"\n}"
+            },
+            "url": { "raw": "http://localhost:8082/api/warehouses/1", "protocol": "http", "host": ["localhost"], "port": "8082", "path": ["api", "warehouses", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PO Service",
+      "item": [
+        {
+          "name": "Create Purchase Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplierId\": 1,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 10\n    }\n  ]\n}"
+            },
+            "url": { "raw": "http://localhost:8083/api/purchase-orders", "protocol": "http", "host": ["localhost"], "port": "8083", "path": ["api", "purchase-orders"] }
+          }
+        },
+        {
+          "name": "Receive Purchase Order",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8083/api/purchase-orders/1/receive", "protocol": "http", "host": ["localhost"], "port": "8083", "path": ["api", "purchase-orders", "1", "receive"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alert Service",
+      "item": [
+        {
+          "name": "Get All Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8084/api/alerts", "protocol": "http", "host": ["localhost"], "port": "8084", "path": ["api", "alerts"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reporting Service",
+      "item": [
+        {
+          "name": "Stock Valuation Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8085/api/reports/stock-valuation", "protocol": "http", "host": ["localhost"], "port": "8085", "path": ["api", "reports", "stock-valuation"] }
+          }
+        },
+        {
+          "name": "Turnover Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt}}" }
+            ],
+            "url": { "raw": "http://localhost:8085/api/reports/turnover", "protocol": "http", "host": ["localhost"], "port": "8085", "path": ["api", "reports", "turnover"] }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "jwt", "value": "<paste your JWT here>" }
+  ]
+} 
