@@ -4,12 +4,71 @@ from app.database import engine
 from app.models import Base, User
 from sqlalchemy.orm import sessionmaker
 import os
+from datetime import datetime
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Initialize database with pending users
+def initialize_database():
+    session = SessionLocal()
+    
+    # Check if we already have pending users
+    pending_count = session.query(User).filter(User.approval_status == "pending").count()
+    if pending_count == 0:
+        # Add some pending users
+        pending_users = [
+            User(
+                employee_id="EMP004",
+                name="John Doe",
+                email="john.doe@company.com",
+                password_hash="Password123!",
+                role="employee",
+                department="Engineering",
+                title="Software Engineer",
+                phone="+1-555-0123",
+                approval_status="pending",
+                created_at=datetime.utcnow()
+            ),
+            User(
+                employee_id="EMP005",
+                name="Jane Smith",
+                email="jane.smith@company.com",
+                password_hash="Password123!",
+                role="employee",
+                department="Marketing",
+                title="Marketing Specialist",
+                phone="+1-555-0124",
+                approval_status="pending",
+                created_at=datetime.utcnow()
+            ),
+            User(
+                employee_id="EMP006",
+                name="Mike Wilson",
+                email="mike.wilson@company.com",
+                password_hash="Password123!",
+                role="employee",
+                department="Sales",
+                title="Sales Representative",
+                phone="+1-555-0125",
+                approval_status="pending",
+                created_at=datetime.utcnow()
+            )
+        ]
+        
+        for user in pending_users:
+            session.add(user)
+        
+        session.commit()
+        print("Added pending users to database")
+    
+    session.close()
+
+# Initialize database
+initialize_database()
 
 # Create Flask app
 app = Flask(__name__)
@@ -385,85 +444,43 @@ def manage_user(user_id):
 
 @app.route("/api/users/<int:user_id>/approve", methods=["POST"])
 def approve_user(user_id):
-    global PENDING_REGISTRATIONS, USERS
-    
     try:
         data = request.get_json()
         action = data.get("action", "approve")  # approve or reject
         
-        # First check if it's a pending registration
-        pending_user = None
-        for user in PENDING_REGISTRATIONS:
-            if user["id"] == user_id:
-                pending_user = user
-                break
+        session = SessionLocal()
         
-        if pending_user:
-            # Handle pending registration approval/rejection
-            if action == "approve":
-                # Move user from pending to approved (add to USERS)
-                new_user = {
-                    "id": pending_user["id"],
-                    "email": pending_user["email"],
-                    "password": "Password123!",  # Default password
-                    "role": pending_user["role"],
-                    "name": pending_user["name"],
-                    "department": pending_user.get("department", ""),
-                    "title": pending_user.get("title", ""),
-                    "phone": pending_user.get("phone", ""),
-                    "manager_id": None,
-                    "appraiser_id": None,
-                    "approval_status": "approved"
-                }
-                USERS[pending_user["email"]] = new_user
-                
-                # Remove from pending registrations
-                PENDING_REGISTRATIONS = [u for u in PENDING_REGISTRATIONS if u["id"] != user_id]
-                
-                return jsonify({
-                    "message": "User approved successfully",
-                    "user": {
-                        "id": new_user["id"],
-                        "email": new_user["email"],
-                        "name": new_user["name"],
-                        "approval_status": "approved"
-                    }
-                })
-            else:
-                # Reject the user
-                PENDING_REGISTRATIONS = [u for u in PENDING_REGISTRATIONS if u["id"] != user_id]
-                
-                return jsonify({
-                    "message": "User rejected successfully",
-                    "user": {
-                        "id": pending_user["id"],
-                        "email": pending_user["email"],
-                        "name": pending_user["name"],
-                        "approval_status": "rejected"
-                    }
-                })
-        
-        # If not found in pending registrations, check regular users
-        user = None
-        for email, u in USERS.items():
-            if u["id"] == user_id:
-                user = u
-                break
+        # Find user in database
+        user = session.query(User).filter(User.id == user_id).first()
         
         if not user:
+            session.close()
             return jsonify({"error": "User not found"}), 404
         
         # Update user approval status
-        user["approval_status"] = "approved" if action == "approve" else "rejected"
+        if action == "approve":
+            user.approval_status = "approved"
+            user.approved_at = datetime.utcnow()
+            message = "User approved successfully"
+        else:
+            user.approval_status = "rejected"
+            message = "User rejected successfully"
+        
+        session.commit()
+        
+        # Get user data before closing session
+        user_data = {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "approval_status": user.approval_status
+        }
+        
+        session.close()
         
         return jsonify({
-            "message": f"User {action} successfully",
-            "user": {
-                "id": user["id"],
-                "email": user["email"],
-                "name": user["name"],
-                "approval_status": user["approval_status"]
-            }
+            "message": message,
+            "user": user_data
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -561,7 +578,30 @@ def mark_all_notifications_read():
 # Pending registrations endpoint
 @app.route("/api/pending-registrations", methods=["GET"])
 def get_pending_registrations():
-    return jsonify(PENDING_REGISTRATIONS)
+    try:
+        # Query the database for users with pending approval status
+        session = SessionLocal()
+        pending_users = session.query(User).filter(User.approval_status == "pending").all()
+        
+        # Convert to JSON-serializable format
+        pending_data = []
+        for user in pending_users:
+            pending_data.append({
+                "id": user.id,
+                "email": user.email,
+                "name": user.name,
+                "role": user.role,
+                "department": user.department or "",
+                "title": user.title or "",
+                "phone": user.phone or "",
+                "created_at": user.created_at.isoformat() if user.created_at else None,
+                "approval_status": user.approval_status
+            })
+        
+        session.close()
+        return jsonify(pending_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Goals endpoints
 @app.route("/api/goals/", methods=["GET"])
