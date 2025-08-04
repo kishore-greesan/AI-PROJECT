@@ -1,46 +1,30 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.api import router
-from app.config.settings import settings
+from flask import Flask, jsonify
+from flask_cors import CORS
 from app.database import engine
 from app.models import Base
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-# Create FastAPI app
-app = FastAPI(
-    title=settings.APP_NAME,
-    version=settings.APP_VERSION,
-    description="Employee Performance Management System API",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
+# Create Flask app
+app = Flask(__name__)
+CORS(app)
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Include API router
-app.include_router(router, prefix="/api")
-
-@app.get("/")
+@app.route("/")
 def read_root():
-    return {
+    return jsonify({
         "message": "Welcome to Employee Performance Management System",
-        "version": settings.APP_VERSION,
+        "version": "1.0.0",
         "docs": "/docs"
-    }
+    })
 
-@app.get("/health")
+@app.route("/health")
 def health_check():
-    return {"status": "healthy"}
+    return jsonify({"status": "healthy", "message": "Employee Performance Management API is running"})
+
+@app.route("/api/test")
+def test_api():
+    return jsonify({"message": "API is working!"})
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    app.run(host="0.0.0.0", port=8000, debug=False) 
