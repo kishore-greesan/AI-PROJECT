@@ -672,21 +672,77 @@ def get_reviews_summary():
 # Reports endpoints
 @app.route("/api/reports/admin/overview", methods=["GET"])
 def get_admin_overview():
+    # Count users by role
+    users_by_role = []
+    role_counts = {}
+    for user in USERS.values():
+        role = user["role"]
+        role_counts[role] = role_counts.get(role, 0) + 1
+    
+    for role, count in role_counts.items():
+        users_by_role.append({"role": role, "count": count})
+    
+    # Count goals by status
+    goals_by_status = []
+    status_counts = {}
+    for goal in GOALS:
+        status = goal["status"]
+        status_counts[status] = status_counts.get(status, 0) + 1
+    
+    for status, count in status_counts.items():
+        goals_by_status.append({"status": status, "count": count})
+    
+    # Calculate average progress
+    total_progress = sum(goal.get("progress", 0) for goal in GOALS)
+    average_progress = total_progress / len(GOALS) if GOALS else 0
+    
+    # Mock skills by category
+    skills_by_category = [
+        {"category": "Technical", "count": 8},
+        {"category": "Leadership", "count": 5},
+        {"category": "Communication", "count": 6},
+        {"category": "Problem Solving", "count": 7}
+    ]
+    
+    # Mock reviews by rating
+    reviews_by_rating = [
+        {"rating": "5 Stars", "count": 12},
+        {"rating": "4 Stars", "count": 8},
+        {"rating": "3 Stars", "count": 3},
+        {"rating": "2 Stars", "count": 1}
+    ]
+    
     return jsonify({
         "total_users": len(USERS),
         "total_goals": len(GOALS),
-        "completed_goals": len([g for g in GOALS if g["status"] == "completed"]),
-        "pending_reviews": len([g for g in GOALS if g["status"] == "pending_review"])
+        "average_goal_progress": average_progress,
+        "recent_registrations": 2,
+        "users_by_role": users_by_role,
+        "goals_by_status": goals_by_status,
+        "skills_by_category": skills_by_category,
+        "reviews_by_rating": reviews_by_rating
     })
 
 @app.route("/api/reports/admin/department-stats", methods=["GET"])
 def get_department_stats():
+    # Mock department data
+    users_by_department = [
+        {"department": "Engineering", "count": 5},
+        {"department": "Marketing", "count": 3},
+        {"department": "Sales", "count": 4},
+        {"department": "IT", "count": 2}
+    ]
+    
+    progress_by_department = [
+        {"department": "Engineering", "avg_progress": 78},
+        {"department": "Marketing", "avg_progress": 65},
+        {"department": "Sales", "avg_progress": 82},
+        {"department": "IT", "avg_progress": 90}
+    ]
+    
     return jsonify({
-        "departments": [
-            {"name": "Engineering", "users": 5, "goals": 12},
-            {"name": "Marketing", "users": 3, "goals": 8},
-            {"name": "Sales", "users": 4, "goals": 10}
-        ]
+        "users_by_department": users_by_department,
+        "progress_by_department": progress_by_department
     })
 
 @app.route("/api/reports/manager/team-overview", methods=["GET"])
