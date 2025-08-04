@@ -52,7 +52,7 @@ GOALS = [
         "id": 1,
         "title": "Improve Team Collaboration",
         "description": "Enhance communication and teamwork",
-        "status": "in_progress",
+        "status": "draft",
         "progress": 75,
         "due_date": "2024-12-31",
         "user_id": 3
@@ -61,7 +61,7 @@ GOALS = [
         "id": 2,
         "title": "Complete Project Milestone",
         "description": "Finish the current project phase",
-        "status": "completed",
+        "status": "submitted",
         "progress": 100,
         "due_date": "2024-11-30",
         "user_id": 3
@@ -147,6 +147,7 @@ def get_user_from_token(token):
     if not token or not token.startswith('token_'):
         return None
     try:
+        # Token format: token_{user_id}_{role}
         parts = token.split('_')
         if len(parts) >= 3:
             user_id = int(parts[1])
@@ -270,7 +271,10 @@ def get_current_user():
             return jsonify({"error": "Authorization header required"}), 401
         
         token = auth_header.split(' ')[1]
+        print(f"Debug: Received token: {token}")  # Debug line
+        
         user = get_user_from_token(token)
+        print(f"Debug: Found user: {user}")  # Debug line
         
         if not user:
             return jsonify({"error": "Invalid token"}), 401
@@ -283,6 +287,7 @@ def get_current_user():
             "department": user.get("department", "")
         })
     except Exception as e:
+        print(f"Debug: Error in get_current_user: {e}")  # Debug line
         return jsonify({"error": str(e)}), 500
 
 # User endpoints
@@ -496,7 +501,7 @@ def create_goal():
         new_goal = {
             "id": len(GOALS) + 1,
             **data,
-            "status": "in_progress",
+            "status": "draft",
             "progress": 0
         }
         GOALS.append(new_goal)
