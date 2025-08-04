@@ -1,31 +1,20 @@
 from fastapi import APIRouter
-from app.api.auth import router as auth_router
-from app.api.users import router as users_router
-from app.api.upload import router as upload_router
-from app.api.goal import router as goal_router
-from app.api.review import router as review_router
-from app.api.notifications import router as notifications_router
-from app.api.skills import router as skills_router
+from .auth import router as auth_router
+from .users import router as users_router
+from .goal import router as goals_router
+from .review import router as reviews_router
+from .skills import router as skills_router
+from .notifications import router as notifications_router
+from .reports import router as reports_router
+from .profile import router as profile_router
 
-# Create main API router
-api_router = APIRouter()
+router = APIRouter()
 
-# Include all routers
-api_router.include_router(auth_router)
-api_router.include_router(users_router)
-api_router.include_router(upload_router)
-api_router.include_router(goal_router)
-api_router.include_router(review_router)
-api_router.include_router(notifications_router)
-api_router.include_router(skills_router, prefix="/skills")
-
-__all__ = [
-    "api_router",
-    "auth_router",
-    "users_router", 
-    "upload_router",
-    "goal_router",
-    "review_router",
-    "notifications_router",
-    "skills_router"
-] 
+router.include_router(auth_router, tags=["Authentication"])
+router.include_router(users_router, tags=["Users"])
+router.include_router(goals_router, tags=["Goals"])
+router.include_router(reviews_router, tags=["Reviews"])
+router.include_router(skills_router, prefix="/skills", tags=["Skills"])
+router.include_router(notifications_router, tags=["Notifications"])
+router.include_router(reports_router, prefix="/reports", tags=["Reports"])
+router.include_router(profile_router, prefix="/profile", tags=["Profile"]) 

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, validator
 from typing import Optional
 from datetime import datetime
-from app.models.user import UserRole
+from app.models.user import UserRole, ApprovalStatus
 
 class UserBase(BaseModel):
     name: str
@@ -34,6 +34,20 @@ class UserCreate(UserBase):
             raise ValueError('Password must contain at least one special character')
         return v
 
+class UserRegistration(UserBase):
+    password: str
+    
+    @validator('password')
+    def validate_password(cls, v):
+        if len(v) < 6:
+            raise ValueError('Password must be at least 6 characters long')
+        return v
+
+class UserApproval(BaseModel):
+    user_id: int
+    approval_status: ApprovalStatus
+    reason: Optional[str] = None
+
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
@@ -50,6 +64,9 @@ class UserUpdate(BaseModel):
 class UserResponse(UserBase):
     id: int
     is_active: bool
+    approval_status: ApprovalStatus
+    approved_by: Optional[int] = None
+    approved_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
     

@@ -352,24 +352,6 @@ const EditableReportingStructure = ({ user, onUpdate }) => {
           <p>• Promotion recommendations</p>
         </div>
       </div>
-
-      <div className="border border-gray-200 rounded-lg p-4 bg-blue-50">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-              <span className="text-green-600 font-bold text-sm">🎯</span>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900">Performance Cycle</h3>
-            </div>
-          </div>
-        </div>
-        <div className="text-xs text-gray-500">
-          <p>• View performance across different cycles</p>
-          <p>• Compare goals and achievements</p>
-          <p>• Track career progression</p>
-        </div>
-      </div>
     </div>
   )
 }

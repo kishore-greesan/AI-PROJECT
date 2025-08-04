@@ -4,6 +4,7 @@ import useAuthStore from '../store/authStore'
 import { getApiUrl } from '../services/api'
 import GoalCard from '../components/cards/GoalCard'
 import EditableReportingStructure from '../components/EditableReportingStructure'
+import PendingRegistrations from '../components/PendingRegistrations'
 
 const Dashboard = () => {
   const { user, logout, token, updateUser } = useAuthStore()
@@ -748,6 +749,9 @@ const Dashboard = () => {
             )) || <p className="text-gray-500">No recent activity</p>}
           </div>
         </div>
+
+        {/* Pending Registrations */}
+        <PendingRegistrations />
       </div>
     )
   }

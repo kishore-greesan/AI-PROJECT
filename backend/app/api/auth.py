@@ -2,11 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services.auth_service import AuthService
-from app.schemas.user import UserCreate, UserLogin, Token, UserResponse, RefreshTokenRequest
-from app.models.user import UserRole, User
+from app.services.notification_service import NotificationService
+from app.schemas.user import UserCreate, UserLogin, Token, UserResponse, RefreshTokenRequest, UserRegistration, UserApproval
+from app.models.user import UserRole, User, ApprovalStatus
+from app.models.notification import NotificationType
 from app.utils.security import get_current_user, verify_token, create_access_token, create_refresh_token
 from app.utils.dependencies import get_admin_user
 from app.utils.exceptions import raise_unauthorized
+from typing import List
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -32,17 +35,93 @@ def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(
+    user_data: UserRegistration, 
+    db: Session = Depends(get_db)
+):
+    """
+    Register a new user (pending approval).
+    """
+    auth_service = AuthService(db)
+    notification_service = NotificationService(db)
+    
+    # Create user with pending approval
+    user = auth_service.register_user(user_data)
+    
+    # Notify all admins about new registration
+    admins = db.query(User).filter(User.role == UserRole.ADMIN).all()
+    for admin in admins:
+        notification_service.create_notification(
+            user_id=admin.id,
+            title="New User Registration",
+            message=f"New user {user.name} ({user.email}) has registered and is pending approval.",
+            notification_type=NotificationType.USER_REGISTRATION,
+            related_user_id=user.id
+        )
+    
+    return user
+
+@router.post("/register-admin", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def register_admin(
     user_data: UserCreate, 
     db: Session = Depends(get_db), 
     current_user: User = Depends(get_admin_user)
 ):
     """
-    Register a new user (Admin only).
+    Register a new user (Admin only - auto-approved).
     """
     auth_service = AuthService(db)
     
     # Create user
     user = auth_service.create_user(user_data)
+    
+    return user
+
+@router.get("/pending-registrations", response_model=List[UserResponse])
+def get_pending_registrations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_admin_user)
+):
+    """
+    Get all pending user registrations (Admin only).
+    """
+    auth_service = AuthService(db)
+    pending_users = auth_service.get_pending_registrations()
+    return pending_users
+
+@router.post("/approve-user", response_model=UserResponse)
+def approve_user(
+    approval_data: UserApproval,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_admin_user)
+):
+    """
+    Approve or reject a user registration (Admin only).
+    """
+    auth_service = AuthService(db)
+    notification_service = NotificationService(db)
+    
+    # Approve/reject user
+    user = auth_service.approve_user(
+        user_id=approval_data.user_id,
+        admin_user=current_user,
+        approval_status=approval_data.approval_status,
+        reason=approval_data.reason
+    )
+    
+    # Notify the user about approval/rejection
+    notification_type = NotificationType.USER_APPROVED if approval_data.approval_status == ApprovalStatus.APPROVED else NotificationType.USER_REJECTED
+    title = "Registration Approved" if approval_data.approval_status == ApprovalStatus.APPROVED else "Registration Rejected"
+    message = f"Your registration has been {approval_data.approval_status.value}."
+    if approval_data.reason:
+        message += f" Reason: {approval_data.reason}"
+    
+    notification_service.create_notification(
+        user_id=user.id,
+        title=title,
+        message=message,
+        notification_type=notification_type,
+        sender_id=current_user.id
+    )
     
     return user
 

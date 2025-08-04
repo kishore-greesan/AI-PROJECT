@@ -5,14 +5,14 @@ import useAuthStore from '../store/authStore'
 export const getApiUrl = () => {
   // Check if we're running in a browser (client-side)
   if (typeof window !== 'undefined') {
-    // In production, use the environment variable
+    // In production, use environment variable or fallback to relative URL
     if (import.meta.env.PROD) {
-      const url = import.meta.env.VITE_API_URL || 'https://your-backend-url.railway.app/api'
+      const url = import.meta.env.VITE_API_URL || '/api'
       console.log('Production detected, using URL:', url)
       return url
     }
-    // In development, use localhost
-    const url = 'http://localhost:8000/api'
+    // In development, use localhost or environment variable
+    const url = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
     console.log('Development detected, using URL:', url)
     return url
   }
@@ -49,6 +49,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Error:', error.response?.data || error.message)
     if (error.response?.status === 401) {
       // Handle unauthorized access
       useAuthStore.getState().logout()

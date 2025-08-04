@@ -14,7 +14,7 @@ class GoalStatus(str, Enum):
 class GoalBase(BaseModel):
     title: str = Field(..., description="Goal title is required")
     description: str = Field(..., description="Goal description is required")
-    target: str = Field(..., description="Goal target is required")
+    target: Optional[str] = Field(None, description="Goal target (optional)")
     quarter: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None

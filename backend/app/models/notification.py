@@ -10,6 +10,9 @@ class NotificationType(enum.Enum):
     GOAL_RETURNED = "goal_returned"
     REVIEW_REQUESTED = "review_requested"
     SYSTEM_MESSAGE = "system_message"
+    USER_REGISTRATION = "user_registration"
+    USER_APPROVED = "user_approved"
+    USER_REJECTED = "user_rejected"
 
 class Notification(Base):
     __tablename__ = "notifications"
@@ -25,6 +28,7 @@ class Notification(Base):
     # Optional foreign keys for related entities
     goal_id = Column(Integer, ForeignKey("goals.id"), nullable=True)
     sender_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    related_user_id = Column(Integer, ForeignKey("users.id"), nullable=True)  # For user approval notifications
     
     def __repr__(self):
         return f"<Notification(id={self.id}, user_id={self.user_id}, type={self.notification_type}, read={self.is_read})>" 

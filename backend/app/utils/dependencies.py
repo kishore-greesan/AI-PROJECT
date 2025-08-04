@@ -13,13 +13,13 @@ def get_current_user_required(current_user: User = Depends(get_current_user)) ->
 def get_admin_user(current_user: User = Depends(get_current_user)) -> User:
     """Dependency that ensures user is an admin"""
     if current_user.role != UserRole.ADMIN:
-        raise raise_forbidden("Only administrators can perform this action")
+        raise_forbidden("Only administrators can perform this action")
     return current_user
 
 def get_reviewer_user(current_user: User = Depends(get_current_user)) -> User:
     """Dependency that ensures user is a reviewer or admin"""
     if current_user.role not in [UserRole.REVIEWER, UserRole.ADMIN]:
-        raise raise_forbidden("Only reviewers and administrators can perform this action")
+        raise_forbidden("Only reviewers and administrators can perform this action")
     return current_user
 
 def get_user_by_id(
@@ -32,12 +32,12 @@ def get_user_by_id(
     
     # Check permissions
     if current_user.role == UserRole.EMPLOYEE and current_user.id != user_id:
-        raise raise_forbidden("You can only access your own profile")
+        raise_forbidden("You can only access your own profile")
     
     # Get user
     user = db.query(User).filter(User.id == user_id, User.is_active == True).first()
     if not user:
-        raise raise_not_found("User not found")
+        raise_not_found("User not found")
     
     return user
 

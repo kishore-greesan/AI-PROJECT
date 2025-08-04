@@ -16,7 +16,8 @@ class NotificationService:
         message: str,
         notification_type: NotificationType,
         goal_id: Optional[int] = None,
-        sender_id: Optional[int] = None
+        sender_id: Optional[int] = None,
+        related_user_id: Optional[int] = None
     ) -> Notification:
         """Create a new notification."""
         notification = Notification(
@@ -25,7 +26,8 @@ class NotificationService:
             message=message,
             notification_type=notification_type,
             goal_id=goal_id,
-            sender_id=sender_id
+            sender_id=sender_id,
+            related_user_id=related_user_id
         )
         self.db.add(notification)
         self.db.commit()

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey, Enum, Numeric, DateTime
+from sqlalchemy.orm import relationship
 from app.database import Base
 import enum
 from datetime import datetime
@@ -25,6 +26,10 @@ class Goal(Base):
     reviewer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     progress = Column(Numeric(5, 2), default=0.00, nullable=False)  # 0.00 to 100.00
     progress_updated_at = Column(DateTime, default=datetime.utcnow, nullable=True)
+
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id])
+    reviewer = relationship("User", foreign_keys=[reviewer_id])
 
 class GoalProgressHistory(Base):
     __tablename__ = "goal_progress_history"

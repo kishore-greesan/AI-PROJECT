@@ -4,7 +4,7 @@ from app.schemas.goal import GoalCreate, GoalUpdate, GoalResponse, GoalProgressU
 from app.models.goal import Goal, GoalStatus, GoalProgressHistory
 from app.database import get_db
 from app.models.user import User
-from app.api.auth import get_current_user
+from app.utils.security import get_current_user
 from app.services.notification_service import NotificationService
 from typing import List
 from datetime import datetime
@@ -36,12 +36,17 @@ def create_goal(goal: GoalCreate, db: Session = Depends(get_db), current_user: U
 
 @router.get("/review", response_model=List[GoalResponse])
 def list_goals_for_review(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # Only reviewers can access
-    if current_user.role != "reviewer":
+    # Only reviewers and admins can access
+    if current_user.role not in ["reviewer", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized")
     
     # Get goals with user information
-    goals = db.query(Goal).filter(Goal.reviewer_id == current_user.id, Goal.status == GoalStatus.submitted).all()
+    if current_user.role == "admin":
+        # Admin can see all submitted goals
+        goals = db.query(Goal).filter(Goal.status == GoalStatus.submitted).all()
+    else:
+        # Reviewers can only see goals assigned to them
+        goals = db.query(Goal).filter(Goal.reviewer_id == current_user.id, Goal.status == GoalStatus.submitted).all()
     
     # Add user information to each goal
     for goal in goals:
@@ -51,10 +56,18 @@ def list_goals_for_review(db: Session = Depends(get_db), current_user: User = De
 
 @router.post("/{goal_id}/review", response_model=GoalResponse)
 def review_goal(goal_id: int, review_request: GoalReviewRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # Only reviewers can review
-    if current_user.role != "reviewer":
+    # Only reviewers and admins can review
+    if current_user.role not in ["reviewer", "admin"]:
         raise HTTPException(status_code=403, detail="Not authorized")
-    goal = db.query(Goal).filter(Goal.id == goal_id, Goal.reviewer_id == current_user.id, Goal.status == GoalStatus.submitted).first()
+    
+    # Find the goal
+    if current_user.role == "admin":
+        # Admin can review any submitted goal
+        goal = db.query(Goal).filter(Goal.id == goal_id, Goal.status == GoalStatus.submitted).first()
+    else:
+        # Reviewers can only review goals assigned to them
+        goal = db.query(Goal).filter(Goal.id == goal_id, Goal.reviewer_id == current_user.id, Goal.status == GoalStatus.submitted).first()
+    
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found or not assigned to you")
     

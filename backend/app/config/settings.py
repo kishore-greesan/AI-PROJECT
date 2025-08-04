@@ -1,46 +1,39 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Settings(BaseSettings):
-    # Database settings - Use environment variable or default to SQLite
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./epms.db?check_same_thread=False")
-    
-    # JWT settings
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
-    JWT_ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    
-    # Security settings
-    PASSWORD_MIN_LENGTH: int = 8
-    PASSWORD_REQUIRE_UPPERCASE: bool = True
-    PASSWORD_REQUIRE_LOWERCASE: bool = True
-    PASSWORD_REQUIRE_DIGITS: bool = True
-    PASSWORD_REQUIRE_SPECIAL: bool = True
-    
-    # CORS settings - Add production URLs
-    CORS_ORIGINS: list = [
-        "http://localhost:3000", 
-        "http://localhost:5173",
-        "http://localhost:3001",
-        "http://localhost:3002",
-        "http://localhost:3003",
-        "https://your-frontend-domain.vercel.app"  # Replace with your actual Vercel domain
-    ]
-    
-    # Rate limiting
-    RATE_LIMIT_PER_MINUTE: int = 100
-    
-    # Application settings
+    # App settings
     APP_NAME: str = "Employee Performance Management System"
     APP_VERSION: str = "1.0.0"
-    DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
+    DEBUG: bool = False
+    
+    # Database settings
+    DATABASE_URL: str = "sqlite:///./epms.db"
+    
+    # JWT settings
+    JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    
+    # CORS settings
+    ALLOWED_ORIGINS: list = ["*"]
     
     class Config:
         env_file = ".env"
+        case_sensitive = True
 
-settings = Settings() 
+# Create settings instance
+settings = Settings()
+
+# Override database URL for Railway if DATABASE_URL is provided
+if os.getenv("DATABASE_URL"):
+    settings.DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Override JWT secret for Railway if provided
+if os.getenv("JWT_SECRET_KEY"):
+    settings.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+# Override debug mode for Railway
+if os.getenv("DEBUG"):
+    settings.DEBUG = os.getenv("DEBUG").lower() == "true" 

@@ -126,7 +126,7 @@ def delete_user(
     """
     # Don't allow admin to delete themselves
     if user.id == current_user.id:
-        raise raise_forbidden("You cannot delete your own account")
+        raise_forbidden("You cannot delete your own account")
     
     # Soft delete - set is_active to False
     user.is_active = False
@@ -144,7 +144,7 @@ def get_users(
     """
     Get list of users (Admin only).
     """
-    query = db.query(User).filter(User.is_active == True)
+    query = db.query(User).filter(User.is_active == True).order_by(User.id)
     
     users = query.offset(skip).limit(limit).all()
     return users 
