@@ -79,7 +79,7 @@ const Profile = () => {
     )
   }
 
-  return (
+    return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -169,17 +169,17 @@ const Profile = () => {
                   <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
                     <div className="text-2xl font-bold">{profileData?.company_experience_years || 0}</div>
                     <div className="text-green-100">Company Years</div>
-                  </div>
+        </div>
                   <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
                     <div className="text-2xl font-bold">{profileData?.direct_reports?.length || 0}</div>
                     <div className="text-purple-100">Direct Reports</div>
-                  </div>
+                      </div>
                   <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white">
                     <div className="text-2xl font-bold">{profileData?.goals?.length || 0}</div>
                     <div className="text-orange-100">Active Goals</div>
                   </div>
-                </div>
-
+                  </div>
+                  
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="bg-gray-50 rounded-xl p-6">
                     <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
@@ -201,7 +201,7 @@ const Profile = () => {
 
                   <div className="bg-gray-50 rounded-xl p-6">
                     <h3 className="text-lg font-semibold mb-4">Department Information</h3>
-                    <div className="space-y-3">
+                  <div className="space-y-3">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Department:</span>
                         <span className="font-medium">{profileData?.department_info?.name || 'Not assigned'}</span>
@@ -213,7 +213,7 @@ const Profile = () => {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Description:</span>
                         <span className="font-medium text-sm">{profileData?.department_info?.description || 'No description'}</span>
-                      </div>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -226,7 +226,7 @@ const Profile = () => {
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-2">Organizational Structure</h3>
                   <p className="text-gray-600">View the complete organizational hierarchy and your position within it.</p>
-                </div>
+            </div>
 
                 <div className="space-y-6">
                   {orgHierarchy.org_structure.map((dept) => (
@@ -234,8 +234,8 @@ const Profile = () => {
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="text-lg font-semibold text-gray-900">{dept.name}</h4>
                         <span className="text-sm text-gray-500">{dept.description}</span>
-                      </div>
-                      
+          </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {dept.teams.map((team) => (
                           <div 
@@ -251,7 +251,7 @@ const Profile = () => {
                               {team.id === orgHierarchy.user_info.team_id && (
                                 <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                   Your Team
-                                </span>
+                  </span>
                               )}
                             </div>
                             <p className="text-sm text-gray-600 mb-2">{team.description}</p>
@@ -273,7 +273,7 @@ const Profile = () => {
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-2">Your Team</h3>
                   <p className="text-gray-600">View your direct reports and team members.</p>
-                </div>
+                  </div>
 
                 {profileData?.direct_reports?.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -310,51 +310,51 @@ const Profile = () => {
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-2">Profile Settings</h3>
                   <p className="text-gray-600">Update your personal information and preferences.</p>
-                </div>
+                  </div>
 
                 <div className="bg-gray-50 rounded-xl p-6">
                   <form className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                        <input
-                          type="text"
+                    <input
+                      type="text"
                           value={editForm.name || ''}
                           onChange={(e) => setEditForm({...editForm, name: e.target.value})}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
+                    />
+                  </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input
+                    <input
                           type="email"
                           value={editForm.email || ''}
                           onChange={(e) => setEditForm({...editForm, email: e.target.value})}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                       </div>
-                    </div>
-                    
+                  </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                        <input
-                          type="text"
+                    <input
+                      type="text"
                           value={editForm.title || ''}
                           onChange={(e) => setEditForm({...editForm, title: e.target.value})}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
+                    />
+                  </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                        <input
+                    <input
                           type="tel"
                           value={editForm.phone || ''}
                           onChange={(e) => setEditForm({...editForm, phone: e.target.value})}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                      </div>
-                    </div>
+                    />
+                  </div>
+                </div>
 
                     <div className="flex justify-end space-x-3 pt-4">
                       <button
@@ -372,8 +372,8 @@ const Profile = () => {
                         Save Changes
                       </button>
                     </div>
-                  </form>
-                </div>
+              </form>
+            </div>
               </div>
             )}
           </div>
