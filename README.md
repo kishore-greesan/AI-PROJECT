@@ -2,6 +2,39 @@
 
 A comprehensive web application for managing employee performance, goals, and reviews with role-based access control.
 
+## 📋 Application Deliverables
+
+### 🌐 Live Application URL
+- **Frontend**: [https://epms-frontend.onrender.com](https://epms-frontend.onrender.com)
+- **Backend API**: [https://epms-backend.onrender.com](https://epms-backend.onrender.com)
+
+### 📚 GitHub Repository
+- **Repository**: [https://github.com/kishore-greesan/AI-PROJECT.git](https://github.com/kishore-greesan/AI-PROJECT.git)
+- **Branch**: `main`
+- **Complete source code** with comprehensive documentation
+
+### 🎥 Demo Video
+- **5-minute walkthrough** of key features
+- **Role-based access demonstration** (Admin, Manager, Employee)
+- **Goal management workflow** (creation, submission, review)
+- **Reports and analytics** showcase
+- **User management** and approval process
+
+### 🔐 Admin Credentials for Evaluator Access
+- **Email**: `admin@company.com`
+- **Password**: `Admin123!`
+- **Role**: Administrator with full system access
+
+### 👥 Test User Accounts
+- **Manager Account**:
+  - Email: `manager@company.com`
+  - Password: `Manager123!`
+  - Role: Manager with team oversight
+- **Employee Account**:
+  - Email: `employee@company.com`
+  - Password: `Employee123!`
+  - Role: Employee with goal management
+
 ## 🚀 Quick Start
 
 ### Prerequisites
