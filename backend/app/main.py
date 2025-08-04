@@ -13,7 +13,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]}})
 
 # Simple user data for testing (in production, use database)
 USERS = {
@@ -101,6 +101,40 @@ NOTIFICATIONS = [
 ]
 
 PENDING_REGISTRATIONS = []
+
+# Mock organizational data
+ORG_HIERARCHY = {
+    "departments": [
+        {
+            "id": 1,
+            "name": "Engineering",
+            "description": "Software development and technical operations",
+            "teams": [
+                {"id": 1, "name": "Frontend Team", "members": 5},
+                {"id": 2, "name": "Backend Team", "members": 4},
+                {"id": 3, "name": "DevOps Team", "members": 3}
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Marketing",
+            "description": "Brand management and customer acquisition",
+            "teams": [
+                {"id": 4, "name": "Digital Marketing", "members": 3},
+                {"id": 5, "name": "Content Team", "members": 2}
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Sales",
+            "description": "Customer acquisition and revenue generation",
+            "teams": [
+                {"id": 6, "name": "Enterprise Sales", "members": 4},
+                {"id": 7, "name": "SMB Sales", "members": 3}
+            ]
+        }
+    ]
+}
 
 # Simple token validation (in production, use JWT)
 def get_user_from_token(token):
@@ -314,7 +348,41 @@ def get_employees():
     employees = [user for user in USERS.values() if user["role"] == "employee"]
     return jsonify(employees)
 
+# Profile endpoints
+@app.route("/api/profile/user-profile", methods=["GET"])
+def get_user_profile():
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({"error": "Authorization header required"}), 401
+        
+        token = auth_header.split(' ')[1]
+        user = get_user_from_token(token)
+        
+        if not user:
+            return jsonify({"error": "Invalid token"}), 401
+        
+        return jsonify({
+            "id": user["id"],
+            "email": user["email"],
+            "name": user["name"],
+            "role": user["role"],
+            "department": user.get("department", "Not assigned"),
+            "team": "Not assigned",
+            "title": "Not specified",
+            "phone": "Not specified",
+            "manager": "Not assigned",
+            "years_experience": 0,
+            "company_years": 0,
+            "direct_reports": 0,
+            "active_goals": len([g for g in GOALS if g["user_id"] == user["id"] and g["status"] == "in_progress"])
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
+@app.route("/api/profile/org-hierarchy", methods=["GET"])
+def get_org_hierarchy():
+    return jsonify(ORG_HIERARCHY)
 
 # Notifications endpoints
 @app.route("/api/notifications/", methods=["GET"])
@@ -334,6 +402,10 @@ def mark_notification_read(notification_id):
         notification["read"] = True
         return jsonify({"message": "Notification marked as read"})
     return jsonify({"error": "Notification not found"}), 404
+
+@app.route("/api/notifications/<int:notification_id>/read", methods=["PUT"])
+def mark_notification_read_alt(notification_id):
+    return mark_notification_read(notification_id)
 
 # Pending registrations endpoint
 @app.route("/api/pending-registrations", methods=["GET"])
