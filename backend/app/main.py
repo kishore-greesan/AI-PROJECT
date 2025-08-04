@@ -30,7 +30,7 @@ USERS = {
         "id": 2,
         "email": "manager@test.com", 
         "password": "Password123!",
-        "role": "manager",
+        "role": "reviewer",
         "name": "Manager User",
         "manager_id": None,
         "appraiser_id": None
@@ -382,7 +382,7 @@ def approve_user(user_id):
 def get_reviewers():
     reviewers = []
     for user in USERS.values():
-        if user["role"] in ["admin", "manager"]:
+        if user["role"] in ["admin", "reviewer"]:
             reviewers.append({
                 "id": user["id"],
                 "name": user["name"],
