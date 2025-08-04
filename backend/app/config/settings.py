@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
     
     # Database settings
-    DATABASE_URL: str = "sqlite:///./epms.db"
+    DATABASE_URL: str = "sqlite:///./app.db"
     
     # JWT settings
     JWT_SECRET_KEY: str = "your-secret-key-change-in-production"
@@ -26,14 +26,14 @@ class Settings(BaseSettings):
 # Create settings instance
 settings = Settings()
 
-# Override database URL for Railway if DATABASE_URL is provided
+# Override database URL for Render if DATABASE_URL is provided
 if os.getenv("DATABASE_URL"):
     settings.DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Override JWT secret for Railway if provided
+# Override JWT secret for Render if provided
 if os.getenv("JWT_SECRET_KEY"):
     settings.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 
-# Override debug mode for Railway
+# Override debug mode for Render
 if os.getenv("DEBUG"):
     settings.DEBUG = os.getenv("DEBUG").lower() == "true" 
