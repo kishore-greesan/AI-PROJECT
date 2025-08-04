@@ -1,8 +1,7 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
 import os
+from typing import List
 
-class Settings(BaseSettings):
+class Settings:
     # App settings
     APP_NAME: str = "Employee Performance Management System"
     APP_VERSION: str = "1.0.0"
@@ -17,23 +16,20 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
     # CORS settings
-    ALLOWED_ORIGINS: list = ["*"]
+    ALLOWED_ORIGINS: List[str] = ["*"]
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    def __init__(self):
+        # Override with environment variables
+        if os.getenv("DATABASE_URL"):
+            self.DATABASE_URL = os.getenv("DATABASE_URL")
+        if os.getenv("JWT_SECRET_KEY"):
+            self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+        if os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"):
+            self.ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+        if os.getenv("DEBUG"):
+            self.DEBUG = os.getenv("DEBUG").lower() == "true"
+        if os.getenv("ALLOWED_ORIGINS"):
+            self.ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS").split(",")
 
 # Create settings instance
-settings = Settings()
-
-# Override database URL for Render if DATABASE_URL is provided
-if os.getenv("DATABASE_URL"):
-    settings.DATABASE_URL = os.getenv("DATABASE_URL")
-
-# Override JWT secret for Render if provided
-if os.getenv("JWT_SECRET_KEY"):
-    settings.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-
-# Override debug mode for Render
-if os.getenv("DEBUG"):
-    settings.DEBUG = os.getenv("DEBUG").lower() == "true" 
+settings = Settings() 
