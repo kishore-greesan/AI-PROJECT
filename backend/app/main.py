@@ -40,6 +40,23 @@ USERS = {
     }
 }
 
+# Simple token validation (in production, use JWT)
+def get_user_from_token(token):
+    if not token or not token.startswith('token_'):
+        return None
+    try:
+        parts = token.split('_')
+        if len(parts) >= 3:
+            user_id = int(parts[1])
+            role = parts[2]
+            # Find user by ID and role
+            for user in USERS.values():
+                if user['id'] == user_id and user['role'] == role:
+                    return user
+    except:
+        pass
+    return None
+
 @app.route("/")
 def read_root():
     return jsonify({
@@ -101,6 +118,8 @@ def register():
         email = data.get("email")
         password = data.get("password")
         name = data.get("name", "")
+        role = data.get("role", "employee")
+        department = data.get("department", "")
         
         if not email or not password:
             return jsonify({"error": "Email and password are required"}), 400
@@ -114,8 +133,9 @@ def register():
             "id": new_user_id,
             "email": email,
             "password": password,
-            "role": "employee",
-            "name": name
+            "role": role,
+            "name": name,
+            "department": department
         }
         
         return jsonify({
@@ -123,12 +143,40 @@ def register():
             "user": {
                 "id": new_user_id,
                 "email": email,
-                "role": "employee",
-                "name": name
+                "role": role,
+                "name": name,
+                "department": department
             }
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/auth/me", methods=["GET"])
+def get_current_user():
+    try:
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({"error": "Authorization header required"}), 401
+        
+        token = auth_header.split(' ')[1]
+        user = get_user_from_token(token)
+        
+        if not user:
+            return jsonify({"error": "Invalid token"}), 401
+        
+        return jsonify({
+            "id": user["id"],
+            "email": user["email"],
+            "role": user["role"],
+            "name": user["name"],
+            "department": user.get("department", "")
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/users/me", methods=["GET"])
+def get_my_profile():
+    return get_current_user()
 
 @app.route("/api/users", methods=["GET"])
 def get_users():
@@ -140,11 +188,51 @@ def get_users():
                 "id": user["id"],
                 "email": user["email"],
                 "role": user["role"],
-                "name": user["name"]
+                "name": user["name"],
+                "department": user.get("department", "")
             })
         return jsonify(users_list)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/goals", methods=["GET"])
+def get_goals():
+    # Mock goals data
+    goals = [
+        {
+            "id": 1,
+            "title": "Improve Team Collaboration",
+            "description": "Enhance communication and teamwork",
+            "status": "in_progress",
+            "progress": 75,
+            "due_date": "2024-12-31"
+        },
+        {
+            "id": 2,
+            "title": "Complete Project Milestone",
+            "description": "Finish the current project phase",
+            "status": "completed",
+            "progress": 100,
+            "due_date": "2024-11-30"
+        }
+    ]
+    return jsonify(goals)
+
+@app.route("/api/reports", methods=["GET"])
+def get_reports():
+    # Mock reports data
+    reports = {
+        "performance_summary": {
+            "total_goals": 5,
+            "completed_goals": 3,
+            "average_progress": 80
+        },
+        "recent_activities": [
+            {"date": "2024-01-15", "activity": "Goal completed"},
+            {"date": "2024-01-10", "activity": "Review submitted"}
+        ]
+    }
+    return jsonify(reports)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False) 
