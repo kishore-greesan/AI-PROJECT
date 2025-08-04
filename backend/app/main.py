@@ -73,6 +73,35 @@ REVIEWS = [
     }
 ]
 
+NOTIFICATIONS = [
+    {
+        "id": 1,
+        "title": "New user registered",
+        "message": "john@company.com has registered",
+        "type": "info",
+        "read": False,
+        "created_at": "2024-01-15T10:30:00Z"
+    },
+    {
+        "id": 2,
+        "title": "Goal completed",
+        "message": "jane@company.com completed a goal",
+        "type": "success",
+        "read": False,
+        "created_at": "2024-01-15T08:15:00Z"
+    },
+    {
+        "id": 3,
+        "title": "Performance review submitted",
+        "message": "mike@company.com submitted a review",
+        "type": "warning",
+        "read": True,
+        "created_at": "2024-01-15T06:45:00Z"
+    }
+]
+
+PENDING_REGISTRATIONS = []
+
 # Simple token validation (in production, use JWT)
 def get_user_from_token(token):
     if not token or not token.startswith('token_'):
@@ -246,6 +275,35 @@ def get_users():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
+def manage_user(user_id):
+    if request.method == "GET":
+        for user in USERS.values():
+            if user["id"] == user_id:
+                return jsonify(user)
+        return jsonify({"error": "User not found"}), 404
+    
+    elif request.method == "PUT":
+        try:
+            data = request.get_json()
+            for email, user in USERS.items():
+                if user["id"] == user_id:
+                    user.update(data)
+                    return jsonify({"message": "User updated successfully", "user": user})
+            return jsonify({"error": "User not found"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    elif request.method == "DELETE":
+        try:
+            for email, user in list(USERS.items()):
+                if user["id"] == user_id:
+                    del USERS[email]
+                    return jsonify({"message": "User deleted successfully"})
+            return jsonify({"error": "User not found"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
 @app.route("/api/users/reviewers", methods=["GET"])
 def get_reviewers():
     reviewers = [user for user in USERS.values() if user["role"] in ["admin", "manager"]]
@@ -256,12 +314,31 @@ def get_employees():
     employees = [user for user in USERS.values() if user["role"] == "employee"]
     return jsonify(employees)
 
-@app.route("/api/users/<int:user_id>", methods=["GET"])
-def get_user_by_id(user_id):
-    for user in USERS.values():
-        if user["id"] == user_id:
-            return jsonify(user)
-    return jsonify({"error": "User not found"}), 404
+
+
+# Notifications endpoints
+@app.route("/api/notifications/", methods=["GET"])
+def get_notifications():
+    limit = request.args.get('limit', 10, type=int)
+    return jsonify(NOTIFICATIONS[:limit])
+
+@app.route("/api/notifications/unread-count", methods=["GET"])
+def get_unread_count():
+    unread_count = len([n for n in NOTIFICATIONS if not n["read"]])
+    return jsonify({"unread_count": unread_count})
+
+@app.route("/api/notifications/<int:notification_id>", methods=["PUT"])
+def mark_notification_read(notification_id):
+    notification = next((n for n in NOTIFICATIONS if n["id"] == notification_id), None)
+    if notification:
+        notification["read"] = True
+        return jsonify({"message": "Notification marked as read"})
+    return jsonify({"error": "Notification not found"}), 404
+
+# Pending registrations endpoint
+@app.route("/api/pending-registrations", methods=["GET"])
+def get_pending_registrations():
+    return jsonify(PENDING_REGISTRATIONS)
 
 # Goals endpoints
 @app.route("/api/goals/", methods=["GET"])
