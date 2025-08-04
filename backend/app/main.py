@@ -106,7 +106,41 @@ NOTIFICATIONS = [
     }
 ]
 
-PENDING_REGISTRATIONS = []
+PENDING_REGISTRATIONS = [
+    {
+        "id": 4,
+        "email": "john.doe@company.com",
+        "name": "John Doe",
+        "role": "employee",
+        "department": "Engineering",
+        "title": "Software Engineer",
+        "phone": "+1-555-0123",
+        "created_at": "2024-01-15T10:30:00Z",
+        "approval_status": "pending"
+    },
+    {
+        "id": 5,
+        "email": "jane.smith@company.com",
+        "name": "Jane Smith",
+        "role": "employee",
+        "department": "Marketing",
+        "title": "Marketing Specialist",
+        "phone": "+1-555-0124",
+        "created_at": "2024-01-15T11:45:00Z",
+        "approval_status": "pending"
+    },
+    {
+        "id": 6,
+        "email": "mike.wilson@company.com",
+        "name": "Mike Wilson",
+        "role": "employee",
+        "department": "Sales",
+        "title": "Sales Representative",
+        "phone": "+1-555-0125",
+        "created_at": "2024-01-15T14:20:00Z",
+        "approval_status": "pending"
+    }
+]
 
 # Mock organizational data
 ORG_HIERARCHY = {
@@ -351,12 +385,65 @@ def manage_user(user_id):
 
 @app.route("/api/users/<int:user_id>/approve", methods=["POST"])
 def approve_user(user_id):
+    global PENDING_REGISTRATIONS, USERS
+    
     try:
         data = request.get_json()
-        approval_status = data.get("approval_status")
-        reason = data.get("reason", "")
+        action = data.get("action", "approve")  # approve or reject
         
-        # Find user by ID
+        # First check if it's a pending registration
+        pending_user = None
+        for user in PENDING_REGISTRATIONS:
+            if user["id"] == user_id:
+                pending_user = user
+                break
+        
+        if pending_user:
+            # Handle pending registration approval/rejection
+            if action == "approve":
+                # Move user from pending to approved (add to USERS)
+                new_user = {
+                    "id": pending_user["id"],
+                    "email": pending_user["email"],
+                    "password": "Password123!",  # Default password
+                    "role": pending_user["role"],
+                    "name": pending_user["name"],
+                    "department": pending_user.get("department", ""),
+                    "title": pending_user.get("title", ""),
+                    "phone": pending_user.get("phone", ""),
+                    "manager_id": None,
+                    "appraiser_id": None,
+                    "approval_status": "approved"
+                }
+                USERS[pending_user["email"]] = new_user
+                
+                # Remove from pending registrations
+                PENDING_REGISTRATIONS = [u for u in PENDING_REGISTRATIONS if u["id"] != user_id]
+                
+                return jsonify({
+                    "message": "User approved successfully",
+                    "user": {
+                        "id": new_user["id"],
+                        "email": new_user["email"],
+                        "name": new_user["name"],
+                        "approval_status": "approved"
+                    }
+                })
+            else:
+                # Reject the user
+                PENDING_REGISTRATIONS = [u for u in PENDING_REGISTRATIONS if u["id"] != user_id]
+                
+                return jsonify({
+                    "message": "User rejected successfully",
+                    "user": {
+                        "id": pending_user["id"],
+                        "email": pending_user["email"],
+                        "name": pending_user["name"],
+                        "approval_status": "rejected"
+                    }
+                })
+        
+        # If not found in pending registrations, check regular users
         user = None
         for email, u in USERS.items():
             if u["id"] == user_id:
@@ -367,17 +454,15 @@ def approve_user(user_id):
             return jsonify({"error": "User not found"}), 404
         
         # Update user approval status
-        user["approval_status"] = approval_status
-        if reason:
-            user["rejection_reason"] = reason
+        user["approval_status"] = "approved" if action == "approve" else "rejected"
         
         return jsonify({
-            "message": f"User {approval_status} successfully",
+            "message": f"User {action} successfully",
             "user": {
                 "id": user["id"],
                 "email": user["email"],
                 "name": user["name"],
-                "approval_status": approval_status
+                "approval_status": user["approval_status"]
             }
         })
     except Exception as e:
