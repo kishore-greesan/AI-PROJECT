@@ -14,7 +14,7 @@ This guide will help you deploy the Employee Performance Management System to Re
    ```bash
    git add .
    git commit -m "Prepare for Render deployment"
-   git push origin I24143_KISHOREGREESAN_DEV_L2
+   git push origin main
    ```
 
 ## Step 2: Deploy Backend to Render
@@ -22,14 +22,14 @@ This guide will help you deploy the Employee Performance Management System to Re
 1. **Go to [Render Dashboard](https://dashboard.render.com/)**
 2. **Click "New +" → "Web Service"**
 3. **Connect your GitHub repository:**
-   - Select your repository: `org-ai-learning`
-   - Select branch: `I24143_KISHOREGREESAN_DEV_L2`
+   - Select your repository: `AI-PROJECT`
+   - Select branch: `main`
 
 4. **Configure Backend Service:**
    - **Name:** `emp-performance-backend`
    - **Environment:** `Python`
-   - **Build Command:** `pip install -r I24143_KISHOREGREESAN_DEV_L2/backend/requirements.txt`
-   - **Start Command:** `cd I24143_KISHOREGREESAN_DEV_L2/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Build Command:** `pip install -r backend/requirements.txt`
+   - **Start Command:** `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
 
 5. **Environment Variables:**
    ```
@@ -47,13 +47,13 @@ This guide will help you deploy the Employee Performance Management System to Re
 1. **Go to [Render Dashboard](https://dashboard.render.com/)**
 2. **Click "New +" → "Static Site"**
 3. **Connect your GitHub repository:**
-   - Select your repository: `org-ai-learning`
-   - Select branch: `I24143_KISHOREGREESAN_DEV_L2`
+   - Select your repository: `AI-PROJECT`
+   - Select branch: `main`
 
 4. **Configure Frontend Service:**
    - **Name:** `emp-performance-frontend`
-   - **Build Command:** `cd I24143_KISHOREGREESAN_DEV_L2/frontend && npm install && npm run build`
-   - **Publish Directory:** `I24143_KISHOREGREESAN_DEV_L2/frontend/dist`
+   - **Build Command:** `cd frontend && npm install && npm run build`
+   - **Publish Directory:** `frontend/dist`
 
 5. **Environment Variables:**
    ```

@@ -7,18 +7,17 @@ This repository contains the **Employee Performance Management System** - a comp
 
 ```
 AI-PROJECT/
-└── I24143_KISHOREGREESAN_DEV_L2/
-    ├── backend/                 # FastAPI Backend
-    │   ├── app/                # Application code
-    │   ├── requirements.txt    # Python dependencies
-    │   └── main.py            # Entry point
-    ├── frontend/               # React Frontend
-    │   ├── src/               # Source code
-    │   ├── package.json       # Node.js dependencies
-    │   └── vite.config.js     # Vite configuration
-    ├── render.yaml            # Render deployment config
-    ├── docker-compose.yml     # Local development
-    └── README.md             # Project documentation
+├── backend/                 # FastAPI Backend
+│   ├── app/                # Application code
+│   ├── requirements.txt    # Python dependencies
+│   └── main.py            # Entry point
+├── frontend/               # React Frontend
+│   ├── src/               # Source code
+│   ├── package.json       # Node.js dependencies
+│   └── vite.config.js     # Vite configuration
+├── render.yaml            # Render deployment config
+├── docker-compose.yml     # Local development
+└── README.md             # Project documentation
 ```
 
 ## 🛠️ Technology Stack
@@ -49,7 +48,7 @@ AI-PROJECT/
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/kishore-greesan/AI-PROJECT.git
-   cd AI-PROJECT/I24143_KISHOREGREESAN_DEV_L2
+   cd AI-PROJECT
    ```
 
 2. **Start with Docker (Recommended):**
@@ -115,13 +114,7 @@ AI-PROJECT/
 ## 🚀 Deployment
 
 ### Render Deployment (Recommended)
-See [RENDER_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/RENDER_DEPLOYMENT.md) for detailed instructions.
-
-### Railway Deployment
-See [RAILWAY_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/RAILWAY_DEPLOYMENT.md) for detailed instructions.
-
-### Vercel Deployment
-See [VERCEL_DEPLOYMENT.md](I24143_KISHOREGREESAN_DEV_L2/VERCEL_DEPLOYMENT.md) for detailed instructions.
+See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for detailed instructions.
 
 ## 📊 API Endpoints
 
@@ -198,7 +191,7 @@ GitHub: [@kishore-greesan](https://github.com/kishore-greesan)
 
 For support and questions:
 - Create an issue in this repository
-- Check the deployment guides in the `I24143_KISHOREGREESAN_DEV_L2/` folder
+- Check the deployment guide: [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
 - Review the API documentation at `/docs` when running locally
 
 ---
@@ -206,4 +199,4 @@ For support and questions:
 **🎯 Project Status:** Ready for deployment  
 **📦 Repository:** https://github.com/kishore-greesan/AI-PROJECT.git  
 **🌐 Branch:** `main`  
-**📁 Root Folder:** `I24143_KISHOREGREESAN_DEV_L2/` 
+**🚀 Deployment:** Render (recommended) 
