@@ -21,6 +21,7 @@ services:
         value: "*"
       - key: FLASK_APP
         value: app.main
+    postDeployCommand: cd backend && python render_seed.py
 
   # Frontend Web Service
   - type: web
