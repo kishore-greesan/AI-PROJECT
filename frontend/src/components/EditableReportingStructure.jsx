@@ -220,7 +220,7 @@ const EditableReportingStructure = ({ user, onUpdate }) => {
           >
             <option value="">{loading ? 'Loading reviewers...' : 'Select Reviewer'}</option>
             {availableUsers
-              .filter(u => u.role === 'manager' || u.role === 'admin')
+              .filter(u => u.role === 'reviewer')
               .map(user => (
                 <option key={user.id} value={user.id}>
                   {user.name} ({user.role})
@@ -256,7 +256,7 @@ const EditableReportingStructure = ({ user, onUpdate }) => {
           >
             <option value="">{loading ? 'Loading admins...' : 'Select Appraiser'}</option>
             {availableUsers
-              .filter(u => u.role === 'admin' || u.role === 'manager')
+              .filter(u => u.role === 'reviewer')
               .map(user => (
                 <option key={user.id} value={user.id}>
                   {user.name} ({user.role})
