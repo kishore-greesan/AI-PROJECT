@@ -1,0 +1,24 @@
+## 📋 Application Deliverables
+
+### 🌐 Live Application URL
+- **Frontend**: [https://epms-frontend.onrender.com](https://epms-frontend.onrender.com)
+- **Backend API**: [https://epms-backend.onrender.com](https://epms-backend.onrender.com)
+
+### 📚 GitHub Repository
+- **Repository**: [https://github.com/kishore-greesan/AI-PROJECT.git](https://github.com/kishore-greesan/AI-PROJECT.git)
+- **Branch**: `main`
+- **Complete source code** with comprehensive documentation
+
+### 👥 Test User Accounts
+- **Reviewer Account**:
+  - Email: `manager@test.com`
+  - Password: `Password123!`
+  - Role: (Reviewer)Manager with team oversight
+- **Employee Account**:
+  - Email: `employee@test.com`
+  - Password: `Password123!`
+  - Role: (Employee)Employee with goal management
+- **Admin Account**:
+  - Email: `admin@test.com`
+  - Password: `Password123!`
+  - Role: Admin

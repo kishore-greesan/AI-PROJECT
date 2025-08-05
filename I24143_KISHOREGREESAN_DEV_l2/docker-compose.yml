@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Backend API (Flask)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./app.db
+      - JWT_SECRET_KEY=your-secret-key-change-in-production
+      - DEBUG=True
+      - ALLOWED_ORIGINS=*
+      - FLASK_APP=app.main
+    networks:
+      - epms-network
+    volumes:
+      - ./backend:/app
+    command: python -m flask run --host 0.0.0.0 --port 8000
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    networks:
+      - epms-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+
+networks:
+  epms-network:
+    driver: bridge 
